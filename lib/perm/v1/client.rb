@@ -15,7 +15,7 @@ module CloudFoundry
 
           response = grpc_client.create_role(request)
 
-          yield response.role
+          yield response.role if block_given?
         end
 
         def assign_role(actor, role_id)
@@ -31,6 +31,13 @@ module CloudFoundry
 
           response = grpc_client.has_role(request)
           response.has_role
+        end
+
+        def list_actor_roles(actor)
+          request = Protos::ListActorRolesRequest.new(actor: actor)
+
+          response = grpc_client.list_actor_roles(request)
+          response.roles
         end
 
         private
