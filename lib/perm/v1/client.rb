@@ -15,7 +15,7 @@ module CloudFoundry
 
           response = grpc_client.create_role(request)
 
-          yield response.role if block_given?
+          response.role
         end
 
         def assign_role(actor, role_id)
