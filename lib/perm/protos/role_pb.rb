@@ -3,32 +3,42 @@
 
 require 'google/protobuf'
 
-require 'context_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
+  add_message "cloud_foundry.perm.protos.CreateRoleRequest" do
+    optional :name, :string, 1
+  end
+  add_message "cloud_foundry.perm.protos.CreateRoleResponse" do
+    optional :role, :message, 1, "cloud_foundry.perm.protos.Role"
+  end
   add_message "cloud_foundry.perm.protos.AssignRoleRequest" do
     optional :actor, :string, 1
-    optional :role, :string, 2
-    optional :context, :message, 3, "cloud_foundry.perm.protos.Context"
+    optional :role_id, :string, 2
   end
   add_message "cloud_foundry.perm.protos.AssignRoleResponse" do
   end
   add_message "cloud_foundry.perm.protos.HasRoleRequest" do
     optional :actor, :string, 1
-    optional :role, :string, 2
-    optional :context, :message, 3, "cloud_foundry.perm.protos.Context"
+    optional :role_id, :string, 2
   end
   add_message "cloud_foundry.perm.protos.HasRoleResponse" do
-    optional :hasRole, :bool, 1
+    optional :has_role, :bool, 1
+  end
+  add_message "cloud_foundry.perm.protos.Role" do
+    optional :id, :string, 1
+    optional :name, :string, 2
   end
 end
 
 module CloudFoundry
   module Perm
     module Protos
+      CreateRoleRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.CreateRoleRequest").msgclass
+      CreateRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.CreateRoleResponse").msgclass
       AssignRoleRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.AssignRoleRequest").msgclass
       AssignRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.AssignRoleResponse").msgclass
       HasRoleRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleRequest").msgclass
       HasRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleResponse").msgclass
+      Role = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.Role").msgclass
     end
   end
 end

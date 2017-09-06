@@ -16,6 +16,7 @@ module CloudFoundry
           self.unmarshal_class_method = :decode
           self.service_name = 'cloud_foundry.perm.protos.RoleService'
 
+          rpc :CreateRole, CreateRoleRequest, CreateRoleResponse
           rpc :AssignRole, AssignRoleRequest, AssignRoleResponse
           rpc :HasRole, HasRoleRequest, HasRoleResponse
         end

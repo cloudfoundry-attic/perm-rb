@@ -10,21 +10,33 @@ module CloudFoundry
           @host = host
         end
 
-        def assign_role(actor, role, context)
-          c = Protos::RoleService::Stub.new(self.host, :this_channel_is_insecure)
+        def create_role(role_name)
+          request = Protos::CreateRoleRequest.new(name: role_name)
 
-          request = Protos::AssignRoleRequest.new(actor: actor, role: role, context: Protos::Context.new(context: context))
+          response = grpc_client.create_role(request)
 
-          c.assign_role(request)
+          yield response.role
         end
 
-        def has_role?(actor, role, context)
-          c = Protos::RoleService::Stub.new(self.host, :this_channel_is_insecure)
+        def assign_role(actor, role_id)
+          request = Protos::AssignRoleRequest.new(actor: actor, role_id: role_id)
 
-          request = Protos::HasRoleRequest.new(actor: actor, role: role, context: Protos::Context.new(context: context))
+          grpc_client.assign_role(request)
 
-          response = c.has_role(request)
-          response.hasRole
+          nil
+        end
+
+        def has_role?(actor, role_id)
+          request = Protos::HasRoleRequest.new(actor: actor, role_id: role_id)
+
+          response = grpc_client.has_role(request)
+          response.has_role
+        end
+
+        private
+
+        def grpc_client
+          Protos::RoleService::Stub.new(self.host, :this_channel_is_insecure)
         end
       end
     end
