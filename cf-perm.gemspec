@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
+$LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
 require 'perm/version'
 
@@ -23,4 +25,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'grpc', '~> 1.0'
 
   s.add_development_dependency 'rspec', '~> 3.6.0'
+  s.add_development_dependency 'rubocop', '~> 0.50.0'
+  s.add_development_dependency 'rake', '~> 12'
 end

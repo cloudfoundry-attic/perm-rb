@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 describe 'Perm' do
   let(:host) { ENV.fetch('PERM_RPC_HOST') { 'localhost:6283' } }
-  let(:client) { CloudFoundry::Perm::V1::Client.new(host)  }
+  let(:client) { CloudFoundry::Perm::V1::Client.new(host) }
 
   attr_reader :role1, :role2
   before do

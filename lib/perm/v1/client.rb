@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'perm/protos'
 
 module CloudFoundry
@@ -26,6 +28,7 @@ module CloudFoundry
           nil
         end
 
+        # rubocop:disable Naming/PredicateName
         def has_role?(actor, role_id)
           request = Protos::HasRoleRequest.new(actor: actor, role_id: role_id)
 
@@ -43,7 +46,7 @@ module CloudFoundry
         private
 
         def grpc_client
-          Protos::RoleService::Stub.new(self.host, :this_channel_is_insecure)
+          Protos::RoleService::Stub.new(host, :this_channel_is_insecure)
         end
       end
     end

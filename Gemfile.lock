@@ -9,6 +9,7 @@ GEM
   specs:
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
+    ast (2.3.0)
     diff-lcs (1.3)
     faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
@@ -33,7 +34,14 @@ GEM
     multi_json (1.12.2)
     multipart-post (2.0.0)
     os (0.9.6)
+    parallel (1.12.0)
+    parser (2.4.0.0)
+      ast (~> 2.2)
+    powerpack (0.1.1)
     public_suffix (3.0.0)
+    rainbow (2.2.2)
+      rake
+    rake (12.1.0)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
@@ -47,18 +55,29 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
+    rubocop (0.50.0)
+      parallel (~> 1.10)
+      parser (>= 2.3.3.1, < 3.0)
+      powerpack (~> 0.1)
+      rainbow (>= 2.2.2, < 3.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (~> 1.0, >= 1.0.1)
+    ruby-progressbar (1.8.3)
     signet (0.7.3)
       addressable (~> 2.3)
       faraday (~> 0.9)
       jwt (~> 1.5)
       multi_json (~> 1.10)
+    unicode-display_width (1.3.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   cf-perm!
+  rake (~> 12)
   rspec (~> 3.6.0)
+  rubocop (~> 0.50.0)
 
 BUNDLED WITH
    1.15.4
