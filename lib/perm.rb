@@ -1,2 +1,3 @@
 require 'perm/version'
-require 'perm/v1/client'
+require 'perm/protos'
+require 'perm/v1'

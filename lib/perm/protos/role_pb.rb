@@ -3,6 +3,7 @@
 
 require 'google/protobuf'
 
+require 'actor_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.Role" do
     optional :id, :string, 1
@@ -15,20 +16,20 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :role, :message, 1, "cloud_foundry.perm.protos.Role"
   end
   add_message "cloud_foundry.perm.protos.AssignRoleRequest" do
-    optional :actor, :string, 1
+    optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
     optional :role_id, :string, 2
   end
   add_message "cloud_foundry.perm.protos.AssignRoleResponse" do
   end
   add_message "cloud_foundry.perm.protos.HasRoleRequest" do
-    optional :actor, :string, 1
+    optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
     optional :role_id, :string, 2
   end
   add_message "cloud_foundry.perm.protos.HasRoleResponse" do
     optional :has_role, :bool, 1
   end
   add_message "cloud_foundry.perm.protos.ListActorRolesRequest" do
-    optional :actor, :string, 1
+    optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
   end
   add_message "cloud_foundry.perm.protos.ListActorRolesResponse" do
     repeated :roles, :message, 1, "cloud_foundry.perm.protos.Role"

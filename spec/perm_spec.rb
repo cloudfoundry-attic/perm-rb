@@ -13,19 +13,22 @@ describe 'Perm' do
 
   describe 'assigning a role' do
     it 'calls to the external service, assigning the role' do
-      client.assign_role('test-actor', role1.id)
+      actor1 = CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor1', issuer: 'https://test.example.com')
+      actor2 = CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor2', issuer: 'https://test.example.com')
 
-      expect(client.has_role?('test-actor', role1.id)).to be true
+      client.assign_role(actor1, role1.id)
 
-      expect(client.has_role?('test-actor2', role1.id)).to be false
-      expect(client.has_role?('test-actor', role2.id)).to be false
-      expect(client.has_role?('test-actor', SecureRandom.uuid)).to be false
+      expect(client.has_role?(actor1, role1.id)).to be true
+
+      expect(client.has_role?(actor2, role1.id)).to be false
+      expect(client.has_role?(actor1, role2.id)).to be false
+      expect(client.has_role?(actor1, SecureRandom.uuid)).to be false
     end
   end
 
   describe 'listing roles for an actor' do
     it 'lists all roles assigned to the actor' do
-      actor = 'list-roles-actor'
+      actor = CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor', issuer: 'https://test.example.com')
 
       roles = client.list_actor_roles(actor)
 
