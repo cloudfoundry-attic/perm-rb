@@ -13,6 +13,21 @@ describe 'Perm' do
     client.create_role('role3')
   end
 
+  describe 'creating a role' do
+    it 'saves the role' do
+      role_name = 'test-role'
+      role = client.create_role(role_name)
+
+      expect(role.name).to eq(role_name)
+      expect(role.id).to be_a(String)
+      expect(role.id).not_to be_empty
+
+      retrieved_role = client.get_role(role_name)
+
+      expect(role).to eq(retrieved_role)
+    end
+  end
+
   describe 'assigning a role' do
     it 'calls to the external service, assigning the role' do
       actor1 = CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor1', issuer: 'https://test.example.com')

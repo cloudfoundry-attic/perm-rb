@@ -43,6 +43,13 @@ module CloudFoundry
           response.roles
         end
 
+        def get_role(name)
+          request = Protos::GetRoleRequest.new(name: name)
+
+          response = grpc_client.get_role(request)
+          response.role
+        end
+
         private
 
         def grpc_client

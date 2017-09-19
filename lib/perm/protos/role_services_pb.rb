@@ -20,6 +20,7 @@ module CloudFoundry
           rpc :AssignRole, AssignRoleRequest, AssignRoleResponse
           rpc :HasRole, HasRoleRequest, HasRoleResponse
           rpc :ListActorRoles, ListActorRolesRequest, ListActorRolesResponse
+          rpc :GetRole, GetRoleRequest, GetRoleResponse
         end
 
         Stub = Service.rpc_stub_class
