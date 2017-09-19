@@ -20,8 +20,8 @@ module CloudFoundry
           response.role
         end
 
-        def assign_role(actor, role_id)
-          request = Protos::AssignRoleRequest.new(actor: actor, role_id: role_id)
+        def assign_role(actor, role_name)
+          request = Protos::AssignRoleRequest.new(actor: actor, role_name: role_name)
 
           grpc_client.assign_role(request)
 
@@ -29,8 +29,8 @@ module CloudFoundry
         end
 
         # rubocop:disable Naming/PredicateName
-        def has_role?(actor, role_id)
-          request = Protos::HasRoleRequest.new(actor: actor, role_id: role_id)
+        def has_role?(actor, role_name)
+          request = Protos::HasRoleRequest.new(actor: actor, role_name: role_name)
 
           response = grpc_client.has_role(request)
           response.has_role

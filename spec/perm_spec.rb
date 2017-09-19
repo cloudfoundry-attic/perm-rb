@@ -19,7 +19,7 @@ describe 'Perm' do
       role = client.create_role(role_name)
 
       expect(role.name).to eq(role_name)
-      expect(role.id).to be_a(String)
+      expect(role.name).to be_a(String)
       expect(role.id).not_to be_empty
 
       retrieved_role = client.get_role(role_name)
@@ -33,12 +33,12 @@ describe 'Perm' do
       actor1 = CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor1', issuer: 'https://test.example.com')
       actor2 = CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor2', issuer: 'https://test.example.com')
 
-      client.assign_role(actor1, role1.id)
+      client.assign_role(actor1, role1.name)
 
-      expect(client.has_role?(actor1, role1.id)).to be true
+      expect(client.has_role?(actor1, role1.name)).to be true
 
-      expect(client.has_role?(actor2, role1.id)).to be false
-      expect(client.has_role?(actor1, role2.id)).to be false
+      expect(client.has_role?(actor2, role1.name)).to be false
+      expect(client.has_role?(actor1, role2.name)).to be false
       expect(client.has_role?(actor1, SecureRandom.uuid)).to be false
     end
   end
@@ -51,8 +51,8 @@ describe 'Perm' do
 
       expect(roles).to be_empty
 
-      client.assign_role(actor, role1.id)
-      client.assign_role(actor, role2.id)
+      client.assign_role(actor, role1.name)
+      client.assign_role(actor, role2.name)
 
       roles = client.list_actor_roles(actor)
 

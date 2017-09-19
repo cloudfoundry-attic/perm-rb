@@ -17,10 +17,10 @@ module CloudFoundry
           self.service_name = 'cloud_foundry.perm.protos.RoleService'
 
           rpc :CreateRole, CreateRoleRequest, CreateRoleResponse
+          rpc :GetRole, GetRoleRequest, GetRoleResponse
           rpc :AssignRole, AssignRoleRequest, AssignRoleResponse
           rpc :HasRole, HasRoleRequest, HasRoleResponse
           rpc :ListActorRoles, ListActorRolesRequest, ListActorRolesResponse
-          rpc :GetRole, GetRoleRequest, GetRoleResponse
         end
 
         Stub = Service.rpc_stub_class

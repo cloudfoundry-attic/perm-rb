@@ -17,13 +17,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "cloud_foundry.perm.protos.AssignRoleRequest" do
     optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
-    optional :role_id, :string, 2
+    optional :role_name, :string, 2
   end
   add_message "cloud_foundry.perm.protos.AssignRoleResponse" do
   end
   add_message "cloud_foundry.perm.protos.HasRoleRequest" do
     optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
-    optional :role_id, :string, 2
+    optional :role_name, :string, 2
   end
   add_message "cloud_foundry.perm.protos.HasRoleResponse" do
     optional :has_role, :bool, 1
