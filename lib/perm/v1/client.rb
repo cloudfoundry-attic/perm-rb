@@ -28,6 +28,14 @@ module CloudFoundry
           nil
         end
 
+        def unassign_role(actor, role_name)
+          request = Protos::UnassignRoleRequest.new(actor: actor, role_name: role_name)
+
+          grpc_client.unassign_role(request)
+
+          nil
+        end
+
         # rubocop:disable Naming/PredicateName
         def has_role?(actor, role_name)
           request = Protos::HasRoleRequest.new(actor: actor, role_name: role_name)
