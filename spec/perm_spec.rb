@@ -3,14 +3,24 @@
 require 'securerandom'
 
 describe 'Perm' do
+  let(:role1_name) { 'role1' }
+  let(:role2_name) { 'role2' }
+  let(:role3_name) { 'role3' }
+
   let(:host) { ENV.fetch('PERM_RPC_HOST') { 'localhost:6283' } }
   let(:client) { CloudFoundry::Perm::V1::Client.new(host) }
 
   attr_reader :role1, :role2
   before do
-    @role1 = client.create_role('role1')
-    @role2 = client.create_role('role2')
-    client.create_role('role3')
+    @role1 = client.create_role(role1_name)
+    @role2 = client.create_role(role2_name)
+    client.create_role(role3_name)
+  end
+
+  after do
+    client.delete_role(role1_name)
+    client.delete_role(role2_name)
+    client.delete_role(role3_name)
   end
 
   describe 'creating a role' do
@@ -25,6 +35,10 @@ describe 'Perm' do
       retrieved_role = client.get_role(role_name)
 
       expect(role).to eq(retrieved_role)
+    end
+
+    after do
+      client.delete_role('test-role')
     end
   end
 

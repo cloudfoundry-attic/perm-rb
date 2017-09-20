@@ -20,6 +20,21 @@ module CloudFoundry
           response.role
         end
 
+        def get_role(name)
+          request = Protos::GetRoleRequest.new(name: name)
+
+          response = grpc_client.get_role(request)
+          response.role
+        end
+
+        def delete_role(name)
+          request = Protos::DeleteRoleRequest.new(name: name)
+
+          grpc_client.delete_role(request)
+
+          nil
+        end
+
         def assign_role(actor, role_name)
           request = Protos::AssignRoleRequest.new(actor: actor, role_name: role_name)
 
@@ -49,13 +64,6 @@ module CloudFoundry
 
           response = grpc_client.list_actor_roles(request)
           response.roles
-        end
-
-        def get_role(name)
-          request = Protos::GetRoleRequest.new(name: name)
-
-          response = grpc_client.get_role(request)
-          response.role
         end
 
         private
