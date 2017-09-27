@@ -7,8 +7,8 @@ describe 'Perm' do
   let(:role2_name) { 'role2' }
   let(:role3_name) { 'role3' }
 
-  let(:host) { ENV.fetch('PERM_RPC_HOST') { 'localhost:6283' } }
-  let(:client) { CloudFoundry::Perm::V1::Client.new(host) }
+  let(:url) { ENV.fetch('PERM_RPC_HOST') { 'localhost:6283' } }
+  let(:client) { CloudFoundry::Perm::V1::Client.new(url: url) }
 
   attr_reader :role1, :role2
   before do
@@ -47,17 +47,17 @@ describe 'Perm' do
     let(:actor2) { CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor2', issuer: 'https://test.example.com') }
 
     after do
-      client.unassign_role(actor1, role1.name)
+      client.unassign_role(actor: actor1, role_name: role1.name)
     end
 
     it 'calls to the external service, assigning the role' do
-      client.assign_role(actor1, role1.name)
+      client.assign_role(actor: actor1, role_name: role1.name)
 
-      expect(client.has_role?(actor1, role1.name)).to be true
+      expect(client.has_role?(actor: actor1, role_name: role1.name)).to be true
 
-      expect(client.has_role?(actor2, role1.name)).to be false
-      expect(client.has_role?(actor1, role2.name)).to be false
-      expect(client.has_role?(actor1, SecureRandom.uuid)).to be false
+      expect(client.has_role?(actor: actor2, role_name: role1.name)).to be false
+      expect(client.has_role?(actor: actor1, role_name: role2.name)).to be false
+      expect(client.has_role?(actor: actor1, role_name: SecureRandom.uuid)).to be false
     end
   end
 
@@ -65,19 +65,19 @@ describe 'Perm' do
     let(:actor) { CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor', issuer: 'https://test.example.com') }
 
     after do
-      client.unassign_role(actor, role1.name)
-      client.unassign_role(actor, role2.name)
+      client.unassign_role(actor: actor, role_name: role1.name)
+      client.unassign_role(actor: actor, role_name: role2.name)
     end
 
     it 'lists all roles assigned to the actor' do
-      roles = client.list_actor_roles(actor)
+      roles = client.list_actor_roles(actor: actor)
 
       expect(roles).to be_empty
 
-      client.assign_role(actor, role1.name)
-      client.assign_role(actor, role2.name)
+      client.assign_role(actor: actor, role_name: role1.name)
+      client.assign_role(actor: actor, role_name: role2.name)
 
-      roles = client.list_actor_roles(actor)
+      roles = client.list_actor_roles(actor: actor)
 
       expect(roles).to contain_exactly(role1, role2)
     end
