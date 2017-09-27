@@ -43,41 +43,43 @@ describe 'Perm' do
   end
 
   describe 'assigning a role' do
-    let(:actor1) { CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor1', issuer: 'https://test.example.com') }
-    let(:actor2) { CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor2', issuer: 'https://test.example.com') }
+    let(:actor1) { 'test-actor1' }
+    let(:actor2) { 'test-actor2' }
+    let(:issuer) { 'https://test.example.com' }
 
     after do
-      client.unassign_role(actor: actor1, role_name: role1.name)
+      client.unassign_role(role_name: role1.name, actor_id: actor1, issuer: issuer)
     end
 
     it 'calls to the external service, assigning the role' do
-      client.assign_role(actor: actor1, role_name: role1.name)
+      client.assign_role(role_name: role1.name, actor_id: actor1, issuer: issuer)
 
-      expect(client.has_role?(actor: actor1, role_name: role1.name)).to be true
+      expect(client.has_role?(role_name: role1.name, actor_id: actor1, issuer: issuer)).to be true
 
-      expect(client.has_role?(actor: actor2, role_name: role1.name)).to be false
-      expect(client.has_role?(actor: actor1, role_name: role2.name)).to be false
-      expect(client.has_role?(actor: actor1, role_name: SecureRandom.uuid)).to be false
+      expect(client.has_role?(role_name: role1.name, actor_id: actor2, issuer: issuer)).to be false
+      expect(client.has_role?(role_name: role2.name, actor_id: actor1, issuer: issuer)).to be false
+      expect(client.has_role?(role_name: SecureRandom.uuid, actor_id: actor1, issuer: issuer)).to be false
     end
   end
 
   describe 'listing roles for an actor' do
-    let(:actor) { CloudFoundry::Perm::V1::Models::Actor.new(id: 'test-actor', issuer: 'https://test.example.com') }
+    let(:actor) { 'test-actor' }
+    let(:issuer) { 'https://test.example.com' }
 
     after do
-      client.unassign_role(actor: actor, role_name: role1.name)
-      client.unassign_role(actor: actor, role_name: role2.name)
+      client.unassign_role(role_name: role1.name, actor_id: actor, issuer: issuer)
+      client.unassign_role(role_name: role2.name, actor_id: actor, issuer: issuer)
     end
 
     it 'lists all roles assigned to the actor' do
-      roles = client.list_actor_roles(actor: actor)
+      roles = client.list_actor_roles(actor_id: actor, issuer: issuer)
 
       expect(roles).to be_empty
 
-      client.assign_role(actor: actor, role_name: role1.name)
-      client.assign_role(actor: actor, role_name: role2.name)
+      client.assign_role(role_name: role1.name, actor_id: actor, issuer: issuer)
+      client.assign_role(role_name: role2.name, actor_id: actor, issuer: issuer)
 
-      roles = client.list_actor_roles(actor: actor)
+      roles = client.list_actor_roles(actor_id: actor, issuer: issuer)
 
       expect(roles).to contain_exactly(role1, role2)
     end
