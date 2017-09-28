@@ -6,10 +6,12 @@ module CloudFoundry
   module Perm
     module V1
       class Client
-        attr_reader :url
+        attr_reader :hostname, :port, :url
 
-        def initialize(url:)
-          @url = url
+        def initialize(hostname:, port: 6283)
+          @hostname = hostname
+          @port = port
+          @url = "#{hostname}:#{port}"
         end
 
         def create_role(name)

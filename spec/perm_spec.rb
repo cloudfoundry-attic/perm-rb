@@ -7,8 +7,9 @@ describe 'Perm' do
   let(:role2_name) { 'role2' }
   let(:role3_name) { 'role3' }
 
-  let(:url) { ENV.fetch('PERM_RPC_HOST') { 'localhost:6283' } }
-  let(:client) { CloudFoundry::Perm::V1::Client.new(url: url) }
+  let(:hostname) { ENV.fetch('PERM_RPC_HOST') { 'localhost' } }
+  let(:port) { ENV.fetch('PERM_RPC_PORT') { '6283' } }
+  let(:client) { CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port) }
 
   attr_reader :role1, :role2
   before do
