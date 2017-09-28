@@ -10,7 +10,14 @@ describe 'Perm' do
   let(:role2_name) { 'role2' }
   let(:role3_name) { 'role3' }
 
-  subject(:client) { CloudFoundry::Perm::V1::Client.new(hostname: perm_server.hostname, port: perm_server.port) }
+  let(:hostname) { perm_server.hostname }
+  let(:port) { perm_server.port }
+
+  let(:cert_path) { File.join(File.dirname(__FILE__), 'support', 'fixtures') }
+  let(:ca_paths) { ENV.fetch('PERM_TRUSTED_CAS') { File.join(cert_path, 'tls-ca.crt') } }
+  let(:trusted_cas) { ca_paths.split(',').map { |f| File.open(f).read } }
+
+  subject(:client) { CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: trusted_cas) }
 
   before(:all) do
     perm_server = Helpers::Perm::Server.new
@@ -33,6 +40,41 @@ describe 'Perm' do
     client.delete_role(role1_name)
     client.delete_role(role2_name)
     client.delete_role(role3_name)
+  end
+
+  describe 'TLS' do
+    let(:extra_ca1) { File.open(File.join(cert_path, 'extra-ca1.crt')).read }
+    let(:extra_ca2) { File.open(File.join(cert_path, 'extra-ca2.crt')).read }
+
+    it 'accepts multiple CAs' do
+      trusted_cas.unshift(extra_ca1)
+      trusted_cas.push(extra_ca2)
+
+      client = CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: trusted_cas)
+
+      expect { client.get_role(role1.name) }.not_to raise_error
+    end
+
+    it 'accepts concatenated certs' do
+      ca_string = [extra_ca1, trusted_cas[0], extra_ca2].join('\n')
+
+      client = CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: [ca_string])
+
+      expect { client.get_role(role1.name) }.not_to raise_error
+    end
+
+    it 'errors if there are no CAs' do
+      expect do
+        CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: [])
+      end.to raise_error ArgumentError
+    end
+
+    it "errors if no CAs match the server's certificate" do
+      trusted_cas = [extra_ca1, extra_ca2]
+      client = CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: trusted_cas)
+
+      expect { client.get_role(role1.name) }.to raise_error GRPC::Unavailable
+    end
   end
 
   describe 'creating a role' do

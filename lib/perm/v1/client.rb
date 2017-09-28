@@ -6,12 +6,15 @@ module CloudFoundry
   module Perm
     module V1
       class Client
-        attr_reader :hostname, :port, :url
+        attr_reader :hostname, :port
 
-        def initialize(hostname:, port: 6283)
+        def initialize(hostname:, port: 6283, trusted_cas:)
+          raise ArgumentError, 'trusted_cas cannot be empty' if trusted_cas.empty?
+
           @hostname = hostname
           @port = port
           @url = "#{hostname}:#{port}"
+          @trusted_cas = trusted_cas
         end
 
         def create_role(name)
@@ -81,8 +84,15 @@ module CloudFoundry
 
         private
 
+        attr_reader :url, :trusted_cas, :tls_credentials
+
+        def load_tls_credentials
+          @tls_credentials ||= GRPC::Core::ChannelCredentials.new(trusted_cas.join('\n'))
+        end
+
         def grpc_client
-          Protos::RoleService::Stub.new(url, :this_channel_is_insecure)
+          load_tls_credentials
+          Protos::RoleService::Stub.new(url, tls_credentials)
         end
       end
     end
