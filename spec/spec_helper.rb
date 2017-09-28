@@ -18,6 +18,8 @@
 
 require 'perm'
 
+Dir[File.expand_path('support/**/*.rb', File.dirname(__FILE__))].each { |file| require file }
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

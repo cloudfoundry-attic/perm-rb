@@ -1,17 +1,28 @@
 # frozen_string_literal: true
 
 require 'securerandom'
+require 'support/server'
 
 describe 'Perm' do
+  perm_server = nil
+
   let(:role1_name) { 'role1' }
   let(:role2_name) { 'role2' }
   let(:role3_name) { 'role3' }
 
-  let(:hostname) { ENV.fetch('PERM_RPC_HOST') { 'localhost' } }
-  let(:port) { ENV.fetch('PERM_RPC_PORT') { '6283' } }
-  let(:client) { CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port) }
+  subject(:client) { CloudFoundry::Perm::V1::Client.new(hostname: perm_server.hostname, port: perm_server.port) }
+
+  before(:all) do
+    perm_server = Helpers::Perm::Server.new
+    perm_server.start
+  end
+
+  after(:all) do
+    perm_server.stop
+  end
 
   attr_reader :role1, :role2
+
   before do
     @role1 = client.create_role(role1_name)
     @role2 = client.create_role(role2_name)
