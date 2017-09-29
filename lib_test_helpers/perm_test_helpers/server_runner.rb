@@ -6,9 +6,9 @@ require 'subprocess'
 module CloudFoundry
   module PermTestHelpers
     class ServerRunner
-      attr_reader :hostname, :port, :tls_cas
+      attr_reader :hostname, :port, :tls_ca, :tls_ca_path
 
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
       def initialize(opts = {})
         cwd = File.dirname(__FILE__)
         cert_path = File.join(cwd, '..', 'fixtures', 'certs')
@@ -19,10 +19,10 @@ module CloudFoundry
         @log_level = opts[:log_level] || ENV['PERM_TEST_LOG_LEVEL'] || 'fatal'
         @tls_cert = opts[:tls_cert_path] || ENV['PERM_TEST_TLS_CERT_PATH'] || File.join(cert_path, 'tls.crt')
         @tls_key = opts[:tls_key_path] || ENV['PERM_TEST_TLS_KEY_PATH'] || File.join(cert_path, 'tls.key')
-        tls_ca = opts[:tls_cas] || ENV['PERM_TEST_TLS_CAS'] || File.join(cert_path, 'tls_ca.crt')
-        @tls_cas = tls_ca.split(',').map { |f| File.open(f).read }
+        @tls_ca_path = opts[:tls_ca_path] || ENV['PERM_TEST_TLS_CA_PATH'] || File.join(cert_path, 'tls_ca.crt')
+        @tls_ca = File.open(tls_ca_path).read
       end
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
 
       def start
         @process ||= start_perm

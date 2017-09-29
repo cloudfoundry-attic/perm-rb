@@ -13,7 +13,7 @@ describe 'Perm' do
   let(:hostname) { perm_server.hostname.clone }
   let(:port) { perm_server.port.clone }
 
-  let(:trusted_cas) { perm_server.tls_cas.clone }
+  let(:trusted_cas) { [perm_server.tls_ca.clone] }
 
   subject(:client) { CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: trusted_cas) }
 
