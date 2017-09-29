@@ -87,7 +87,7 @@ module CloudFoundry
         attr_reader :url, :trusted_cas, :tls_credentials
 
         def load_tls_credentials
-          @tls_credentials ||= GRPC::Core::ChannelCredentials.new(trusted_cas.join('\n'))
+          @tls_credentials ||= GRPC::Core::ChannelCredentials.new(trusted_cas.join("\n"))
         end
 
         def grpc_client

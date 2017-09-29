@@ -2,4 +2,5 @@
 
 source 'https://rubygems.org'
 
-gemspec
+gemspec name: 'cf-perm'
+gemspec name: 'cf-perm-test-helpers'

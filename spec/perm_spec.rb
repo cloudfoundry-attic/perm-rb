@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'securerandom'
-require 'support/server'
+require 'perm_test_helpers'
 
 describe 'Perm' do
   perm_server = nil
@@ -10,17 +10,15 @@ describe 'Perm' do
   let(:role2_name) { 'role2' }
   let(:role3_name) { 'role3' }
 
-  let(:hostname) { perm_server.hostname }
-  let(:port) { perm_server.port }
+  let(:hostname) { perm_server.hostname.clone }
+  let(:port) { perm_server.port.clone }
 
-  let(:cert_path) { File.join(File.dirname(__FILE__), 'support', 'fixtures') }
-  let(:ca_paths) { ENV.fetch('PERM_TRUSTED_CAS') { File.join(cert_path, 'tls-ca.crt') } }
-  let(:trusted_cas) { ca_paths.split(',').map { |f| File.open(f).read } }
+  let(:trusted_cas) { perm_server.tls_cas.clone }
 
   subject(:client) { CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: trusted_cas) }
 
   before(:all) do
-    perm_server = Helpers::Perm::Server.new
+    perm_server = CloudFoundry::PermTestHelpers::ServerRunner.new
     perm_server.start
   end
 
@@ -43,6 +41,7 @@ describe 'Perm' do
   end
 
   describe 'TLS' do
+    let(:cert_path) { File.join(File.dirname(__FILE__), 'support', 'fixtures') }
     let(:extra_ca1) { File.open(File.join(cert_path, 'extra-ca1.crt')).read }
     let(:extra_ca2) { File.open(File.join(cert_path, 'extra-ca2.crt')).read }
 
@@ -56,7 +55,7 @@ describe 'Perm' do
     end
 
     it 'accepts concatenated certs' do
-      ca_string = [extra_ca1, trusted_cas[0], extra_ca2].join('\n')
+      ca_string = [extra_ca1, trusted_cas, extra_ca2].join("\n")
 
       client = CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: [ca_string])
 

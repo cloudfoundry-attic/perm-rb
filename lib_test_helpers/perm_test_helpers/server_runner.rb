@@ -3,22 +3,26 @@
 require 'socket'
 require 'subprocess'
 
-module Helpers
-  module Perm
-    class Server
-      attr_reader :hostname, :port
+module CloudFoundry
+  module PermTestHelpers
+    class ServerRunner
+      attr_reader :hostname, :port, :tls_cas
 
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
       def initialize(opts = {})
         cwd = File.dirname(__FILE__)
+        cert_path = File.join(cwd, '..', 'fixtures', 'certs')
 
         @hostname = opts[:hostname] || ENV['PERM_TEST_HOSTNAME'] || 'localhost'
         @port = opts[:port] || ENV['PERM_TEST_PORT'] || random_port
         @perm_path = opts[:perm_path] || ENV['PERM_TEST_PATH'] || 'perm'
         @log_level = opts[:log_level] || ENV['PERM_TEST_LOG_LEVEL'] || 'fatal'
-        @tls_cert = opts[:tls_cert_path] || ENV['PERM_TEST_TLS_CERT_PATH'] || File.join(cwd, 'fixtures', 'tls.crt')
-        @tls_key = opts[:tls_key_path] || ENV['PERM_TEST_TLS_KEY_PATH'] || File.join(cwd, 'fixtures', 'tls.key')
+        @tls_cert = opts[:tls_cert_path] || ENV['PERM_TEST_TLS_CERT_PATH'] || File.join(cert_path, 'tls.crt')
+        @tls_key = opts[:tls_key_path] || ENV['PERM_TEST_TLS_KEY_PATH'] || File.join(cert_path, 'tls.key')
+        tls_ca = opts[:tls_cas] || ENV['PERM_TEST_TLS_CAS'] || File.join(cert_path, 'tls_ca.crt')
+        @tls_cas = tls_ca.split(',').map { |f| File.open(f).read }
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
 
       def start
         @process ||= start_perm
@@ -34,7 +38,7 @@ module Helpers
       attr_writer :port
       attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key
 
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       def start_perm
         retries = 0
         process = nil
@@ -62,8 +66,11 @@ module Helpers
 
           retry if retries < 3
           raise e
+        rescue Errno::ENOENT
+          raise 'perm_path must point to server executable'
         end
       end
+      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       def random_port
         rand(65_000 - 1024) + 1024
