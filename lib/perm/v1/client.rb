@@ -85,15 +85,14 @@ module CloudFoundry
 
         private
 
-        attr_reader :url, :trusted_cas, :tls_credentials, :timeout
+        attr_reader :url, :trusted_cas, :timeout
 
-        def load_tls_credentials
+        def tls_credentials
           @tls_credentials ||= GRPC::Core::ChannelCredentials.new(trusted_cas.join("\n"))
         end
 
         def grpc_client
-          load_tls_credentials
-          Protos::RoleService::Stub.new(url, tls_credentials, timeout: timeout)
+          @grpc_client ||= Protos::RoleService::Stub.new(url, tls_credentials, timeout: timeout)
         end
       end
     end
