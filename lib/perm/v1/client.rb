@@ -8,13 +8,14 @@ module CloudFoundry
       class Client
         attr_reader :hostname, :port
 
-        def initialize(hostname:, port: 6283, trusted_cas:)
+        def initialize(hostname:, port: 6283, trusted_cas:, timeout: 15)
           raise ArgumentError, 'trusted_cas cannot be empty' if trusted_cas.empty?
 
           @hostname = hostname
           @port = port
           @url = "#{hostname}:#{port}"
           @trusted_cas = trusted_cas
+          @timeout = timeout
         end
 
         def create_role(name)
@@ -84,7 +85,7 @@ module CloudFoundry
 
         private
 
-        attr_reader :url, :trusted_cas, :tls_credentials
+        attr_reader :url, :trusted_cas, :tls_credentials, :timeout
 
         def load_tls_credentials
           @tls_credentials ||= GRPC::Core::ChannelCredentials.new(trusted_cas.join("\n"))
@@ -92,7 +93,7 @@ module CloudFoundry
 
         def grpc_client
           load_tls_credentials
-          Protos::RoleService::Stub.new(url, tls_credentials)
+          Protos::RoleService::Stub.new(url, tls_credentials, timeout: timeout)
         end
       end
     end
