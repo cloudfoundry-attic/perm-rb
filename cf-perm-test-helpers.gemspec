@@ -18,4 +18,5 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib_test_helpers']
 
   s.add_dependency 'subprocess', '~> 1'
+  s.add_dependency 'ruby-mysql', '~> 2.9.14'
 end
