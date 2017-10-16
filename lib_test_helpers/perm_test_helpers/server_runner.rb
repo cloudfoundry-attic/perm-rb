@@ -31,6 +31,9 @@ module CloudFoundry
         @db_port = opts[:db][:port] || ENV['PERM_TEST_SQL_DB_PORT'] || '3306'
         @db_username = opts[:db][:username] || ENV['PERM_TEST_SQL_DB_USERNAME'] || 'perm'
         @db_password = opts[:db][:password] || ENV['PERM_TEST_SQL_DB_PASSWORD'] || ''
+
+        @stdout = opts[:stdout] || ENV['PERM_TEST_STDOUT_PATH'] || STDOUT
+        @stderr = opts[:stderr] || ENV['PERM_TEST_STDERR_PATH'] || STDERR
       end
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
 
@@ -50,6 +53,7 @@ module CloudFoundry
       attr_writer :port
       attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key
       attr_reader :db_connection, :db_driver, :db_schema, :db_host, :db_port, :db_username, :db_password
+      attr_reader :stdout, :stderr
 
       def create_db
         @db_connection = Mysql.connect(db_host, db_username, db_password, nil, db_port)
@@ -85,7 +89,7 @@ module CloudFoundry
             '--sql-db-password', db_password,
           ]
 
-          process = Subprocess.popen(cmd)
+          process = Subprocess.popen(cmd, { stdout: stdout, stderr: stderr })
           wait_for_server(process.pid)
           @port = listen_port
 
@@ -104,6 +108,7 @@ module CloudFoundry
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       def random_schema
+        # Dashes are invalid in DB names
         "perm-#{SecureRandom.uuid}".gsub('-', '_')
       end
 
