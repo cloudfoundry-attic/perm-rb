@@ -10,7 +10,7 @@ module CloudFoundry
     class ServerRunner
       attr_reader :hostname, :port, :tls_ca, :tls_ca_path
 
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
       def initialize(opts = {})
         cwd = File.dirname(__FILE__)
         cert_path = File.join(cwd, '..', 'fixtures', 'certs')
@@ -87,10 +87,10 @@ module CloudFoundry
             '--sql-db-host', db_host,
             '--sql-db-port', db_port,
             '--sql-db-username', db_username,
-            '--sql-db-password', db_password,
+            '--sql-db-password', db_password
           ]
 
-          process = Subprocess.popen(cmd, { stdout: stdout, stderr: stderr })
+          process = Subprocess.popen(cmd, stdout: stdout, stderr: stderr)
           wait_for_server(process.pid)
           @port = listen_port
 
@@ -110,7 +110,7 @@ module CloudFoundry
 
       def random_schema
         # Dashes are invalid in DB names
-        "perm-#{SecureRandom.uuid}".gsub('-', '_')
+        "perm-#{SecureRandom.uuid}".tr('-', '_')
       end
 
       def random_port
