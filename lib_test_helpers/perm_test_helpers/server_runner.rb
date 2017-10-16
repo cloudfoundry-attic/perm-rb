@@ -68,7 +68,7 @@ module CloudFoundry
         stmt.execute
       end
 
-      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      # rubocop:disable Metrics/AbcSize
       def start_perm
         retries = 0
         process = nil
