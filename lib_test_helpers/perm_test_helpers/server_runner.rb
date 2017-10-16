@@ -29,6 +29,7 @@ module CloudFoundry
         @db_schema = opts[:db][:schema] || ENV['PERM_TEST_SQL_DB_SCHEMA'] || random_schema
         @db_host = opts[:db][:host] || ENV['PERM_TEST_SQL_DB_HOST'] || 'localhost'
         @db_port = opts[:db][:port] || ENV['PERM_TEST_SQL_DB_PORT'] || '3306'
+        @db_socket = opts[:db][:socket] || ENV['PERM_TEST_SQL_DB_SOCKET'] || Mysql::MYSQL_UNIX_PORT
         @db_username = opts[:db][:username] || ENV['PERM_TEST_SQL_DB_USERNAME'] || 'perm'
         @db_password = opts[:db][:password] || ENV['PERM_TEST_SQL_DB_PASSWORD'] || ''
 
@@ -52,11 +53,11 @@ module CloudFoundry
 
       attr_writer :port
       attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key
-      attr_reader :db_connection, :db_driver, :db_schema, :db_host, :db_port, :db_username, :db_password
+      attr_reader :db_connection, :db_driver, :db_schema, :db_host, :db_port, :db_socket, :db_username, :db_password
       attr_reader :stdout, :stderr
 
       def create_db
-        @db_connection = Mysql.connect(db_host, db_username, db_password, nil, db_port)
+        @db_connection = Mysql.connect(db_host, db_username, db_password, nil, db_port, db_socket)
 
         stmt = @db_connection.prepare("create database #{db_schema}")
         stmt.execute
