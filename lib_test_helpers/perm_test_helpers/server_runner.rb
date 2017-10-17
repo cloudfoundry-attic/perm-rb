@@ -77,6 +77,7 @@ module CloudFoundry
           listen_port = port || random_port
           cmd = [
             perm_path,
+            'serve',
             '--listen-hostname', hostname,
             '--listen-port', listen_port.to_s,
             '--log-level', log_level,
