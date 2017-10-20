@@ -6,7 +6,6 @@ require 'google/protobuf'
 require 'actor_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.Role" do
-    optional :id, :string, 1
     optional :name, :string, 2
   end
   add_message "cloud_foundry.perm.protos.CreateRoleRequest" do

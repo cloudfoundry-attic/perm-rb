@@ -83,7 +83,6 @@ describe 'Perm' do
 
       expect(role.name).to eq(role_name)
       expect(role.name).to be_a(String)
-      expect(role.id).not_to be_empty
 
       retrieved_role = client.get_role(role_name)
 

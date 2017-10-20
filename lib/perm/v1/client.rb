@@ -24,7 +24,7 @@ module CloudFoundry
           response = grpc_client.create_role(request)
           role = response.role
 
-          Models::Role.new(id: role.id, name: role.name)
+          Models::Role.new(name: role.name)
         end
 
         def get_role(name)
@@ -33,7 +33,7 @@ module CloudFoundry
           response = grpc_client.get_role(request)
           role = response.role
 
-          Models::Role.new(id: role.id, name: role.name)
+          Models::Role.new(name: role.name)
         end
 
         def delete_role(name)
@@ -79,7 +79,7 @@ module CloudFoundry
           roles = response.roles
 
           roles.map do |role|
-            Models::Role.new(id: role.id, name: role.name)
+            Models::Role.new(name: role.name)
           end
         end
 

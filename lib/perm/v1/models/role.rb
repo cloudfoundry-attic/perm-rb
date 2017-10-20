@@ -5,10 +5,9 @@ module CloudFoundry
     module V1
       module Models
         class Role < BaseModel
-          attr_reader :id, :name
+          attr_reader :name
 
-          def initialize(id:, name:)
-            @id = id
+          def initialize(name:)
             @name = name
           end
         end
