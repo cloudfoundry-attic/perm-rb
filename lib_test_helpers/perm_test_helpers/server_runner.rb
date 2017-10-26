@@ -7,6 +7,7 @@ require 'subprocess'
 
 module CloudFoundry
   module PermTestHelpers
+    # rubocop:disable Metrics/ClassLength
     class ServerRunner
       attr_reader :hostname, :port, :tls_ca, :tls_ca_path
 
