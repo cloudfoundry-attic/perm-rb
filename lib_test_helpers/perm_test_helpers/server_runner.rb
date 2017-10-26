@@ -40,6 +40,7 @@ module CloudFoundry
 
       def start
         create_db
+        migrate_db
         @process ||= start_perm
       end
 
@@ -61,6 +62,23 @@ module CloudFoundry
 
         stmt = @db_connection.prepare("create database #{db_schema}")
         stmt.execute
+      end
+
+      def migrate_db
+        cmd = [
+          perm_path,
+          'migrate',
+          'up',
+          '--log-level', log_level,
+          '--sql-db-driver', db_driver,
+          '--sql-db-schema', db_schema,
+          '--sql-db-host', db_host,
+          '--sql-db-port', db_port,
+          '--sql-db-username', db_username,
+          '--sql-db-password', db_password
+        ]
+
+        Subprocess.check_call(cmd, stdout: stdout, stderr: stderr)
       end
 
       def drop_db
