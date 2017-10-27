@@ -145,7 +145,7 @@ module CloudFoundry
           Process.getpgid(pid)
 
           TCPSocket.new(hostname, port).close
-        rescue Errno::ECONNREFUSED
+        rescue Errno::ECONNREFUSED, Errno::EAFNOSUPPORT
           time_waited += 0.1
 
           raise 'Perm server not running after 5 seconds' if time_waited >= 5
