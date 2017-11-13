@@ -4,10 +4,12 @@
 require 'google/protobuf'
 
 require 'actor_pb'
+require 'permission_pb'
 require 'role_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.CreateRoleRequest" do
     optional :name, :string, 1
+    repeated :permissions, :message, 2, "cloud_foundry.perm.protos.Permission"
   end
   add_message "cloud_foundry.perm.protos.CreateRoleResponse" do
     optional :role, :message, 1, "cloud_foundry.perm.protos.Role"
