@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CloudFoundry
   module Perm
     module V1

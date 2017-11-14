@@ -92,14 +92,20 @@ describe 'Perm' do
     it 'saves the permissions associated with the role' do
       role_name = 'test-role'
 
-      permission_1 = CloudFoundry::Perm::V1::Models::Permission.new(name: 'permission-1', resource_pattern: 'resource-pattern-1')
-      permission_2 = CloudFoundry::Perm::V1::Models::Permission.new(name: 'permission-2', resource_pattern: 'resource-pattern-2')
+      permission1 = CloudFoundry::Perm::V1::Models::Permission.new(
+        name: 'permission-1',
+        resource_pattern: 'resource-pattern-1'
+      )
+      permission2 = CloudFoundry::Perm::V1::Models::Permission.new(
+        name: 'permission-2',
+        resource_pattern: 'resource-pattern-2'
+      )
 
-      client.create_role(name: role_name, permissions: [permission_1, permission_2])
+      client.create_role(name: role_name, permissions: [permission1, permission2])
 
       retrieved_permissions = client.list_role_permissions(role_name: role_name)
 
-      expect(retrieved_permissions).to contain_exactly(permission_1, permission_2)
+      expect(retrieved_permissions).to contain_exactly(permission1, permission2)
     end
 
     after do
