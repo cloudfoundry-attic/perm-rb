@@ -89,6 +89,19 @@ describe 'Perm' do
       expect(role).to eq(retrieved_role)
     end
 
+    it 'saves the permissions associated with the role' do
+      role_name = 'test-role'
+
+      permission_1 = CloudFoundry::Perm::V1::Models::Permission.new(name: 'permission-1', resource_pattern: 'resource-pattern-1')
+      permission_2 = CloudFoundry::Perm::V1::Models::Permission.new(name: 'permission-2', resource_pattern: 'resource-pattern-2')
+
+      client.create_role(name: role_name, permissions: [permission_1, permission_2])
+
+      retrieved_permissions = client.list_role_permissions(role_name: role_name)
+
+      expect(retrieved_permissions).to contain_exactly(permission_1, permission_2)
+    end
+
     after do
       client.delete_role('test-role')
     end

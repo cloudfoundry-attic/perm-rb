@@ -86,6 +86,17 @@ module CloudFoundry
           end
         end
 
+        def list_role_permissions(role_name:)
+          request = Protos::ListRolePermissionsRequest.new(role_name: role_name)
+
+          response = grpc_client.list_role_permissions(request)
+          permissions = response.permissions
+
+          permissions.map do |permission|
+            Models::Permission.new(name: permission.name, resource_pattern: permission.resource_pattern)
+          end
+        end
+
         private
 
         attr_reader :url, :trusted_cas, :timeout
