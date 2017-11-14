@@ -50,6 +50,12 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.ListActorRolesResponse" do
     repeated :roles, :message, 1, "cloud_foundry.perm.protos.Role"
   end
+  add_message "cloud_foundry.perm.protos.ListRolePermissionsRequest" do
+    optional :role_name, :string, 1
+  end
+  add_message "cloud_foundry.perm.protos.ListRolePermissionsResponse" do
+    repeated :permissions, :message, 1, "cloud_foundry.perm.protos.Permission"
+  end
 end
 
 module CloudFoundry
@@ -69,6 +75,8 @@ module CloudFoundry
       HasRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleResponse").msgclass
       ListActorRolesRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListActorRolesRequest").msgclass
       ListActorRolesResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListActorRolesResponse").msgclass
+      ListRolePermissionsRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListRolePermissionsRequest").msgclass
+      ListRolePermissionsResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListRolePermissionsResponse").msgclass
     end
   end
 end
