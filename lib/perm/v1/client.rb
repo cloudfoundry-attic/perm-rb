@@ -99,7 +99,11 @@ module CloudFoundry
 
         def has_permission?(actor_id:, issuer:, permission_name:, resource_id:)
           actor = Protos::Actor.new(id: actor_id, issuer: issuer)
-          request = Protos::HasPermissionRequest.new(actor: actor, permission_name: permission_name, resource_id: resource_id)
+          request = Protos::HasPermissionRequest.new(
+            actor: actor,
+            permission_name: permission_name,
+            resource_id: resource_id
+          )
 
           response = grpc_permission_service.has_permission(request)
           response.has_permission

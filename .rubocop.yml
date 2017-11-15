@@ -7,6 +7,8 @@ Style/Documentation:
 
 Metrics/LineLength:
   Max: 120
+  Exclude:
+  - spec/**/*.rb
 
 Metrics/BlockLength:
   Exclude:
