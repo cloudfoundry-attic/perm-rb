@@ -24,7 +24,7 @@ module CloudFoundry
           end
           request = Protos::CreateRoleRequest.new(name: name, permissions: permission_protos)
 
-          response = grpc_client.create_role(request)
+          response = grpc_role_service.create_role(request)
           role = response.role
 
           Models::Role.new(name: role.name)
@@ -33,7 +33,7 @@ module CloudFoundry
         def get_role(name)
           request = Protos::GetRoleRequest.new(name: name)
 
-          response = grpc_client.get_role(request)
+          response = grpc_role_service.get_role(request)
           role = response.role
 
           Models::Role.new(name: role.name)
@@ -42,7 +42,7 @@ module CloudFoundry
         def delete_role(name)
           request = Protos::DeleteRoleRequest.new(name: name)
 
-          grpc_client.delete_role(request)
+          grpc_role_service.delete_role(request)
 
           nil
         end
@@ -51,7 +51,7 @@ module CloudFoundry
           actor = Protos::Actor.new(id: actor_id, issuer: issuer)
           request = Protos::AssignRoleRequest.new(actor: actor, role_name: role_name)
 
-          grpc_client.assign_role(request)
+          grpc_role_service.assign_role(request)
 
           nil
         end
@@ -60,7 +60,7 @@ module CloudFoundry
           actor = Protos::Actor.new(id: actor_id, issuer: issuer)
           request = Protos::UnassignRoleRequest.new(actor: actor, role_name: role_name)
 
-          grpc_client.unassign_role(request)
+          grpc_role_service.unassign_role(request)
 
           nil
         end
@@ -70,7 +70,7 @@ module CloudFoundry
           actor = Protos::Actor.new(id: actor_id, issuer: issuer)
           request = Protos::HasRoleRequest.new(actor: actor, role_name: role_name)
 
-          response = grpc_client.has_role(request)
+          response = grpc_role_service.has_role(request)
           response.has_role
         end
 
@@ -78,7 +78,7 @@ module CloudFoundry
           actor = Protos::Actor.new(id: actor_id, issuer: issuer)
           request = Protos::ListActorRolesRequest.new(actor: actor)
 
-          response = grpc_client.list_actor_roles(request)
+          response = grpc_role_service.list_actor_roles(request)
           roles = response.roles
 
           roles.map do |role|
@@ -89,12 +89,20 @@ module CloudFoundry
         def list_role_permissions(role_name:)
           request = Protos::ListRolePermissionsRequest.new(role_name: role_name)
 
-          response = grpc_client.list_role_permissions(request)
+          response = grpc_role_service.list_role_permissions(request)
           permissions = response.permissions
 
           permissions.map do |permission|
             Models::Permission.new(name: permission.name, resource_pattern: permission.resource_pattern)
           end
+        end
+
+        def has_permission?(actor_id:, issuer:, permission_name:, resource_id:)
+          actor = Protos::Actor.new(id: actor_id, issuer: issuer)
+          request = Protos::HasPermissionRequest.new(actor: actor, permission_name: permission_name, resource_id: resource_id)
+
+          response = grpc_permission_service.has_permission(request)
+          response.has_permission
         end
 
         private
@@ -105,8 +113,12 @@ module CloudFoundry
           @tls_credentials ||= GRPC::Core::ChannelCredentials.new(trusted_cas.join("\n"))
         end
 
-        def grpc_client
-          @grpc_client ||= Protos::RoleService::Stub.new(url, tls_credentials, timeout: timeout)
+        def grpc_role_service
+          @grpc_role_service ||= Protos::RoleService::Stub.new(url, tls_credentials, timeout: timeout)
+        end
+
+        def grpc_permission_service
+          @grpc_permission_service ||= Protos::PermissionService::Stub.new(url, tls_credentials, timeout: timeout)
         end
       end
     end

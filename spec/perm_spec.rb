@@ -155,4 +155,39 @@ describe 'Perm' do
       expect(roles).to contain_exactly(role1, role2)
     end
   end
+
+  describe 'asking if someone has permission' do
+    let(:actor) { 'test-actor' }
+    let(:actor2) { 'test-actor-2' }
+    let(:issuer) { 'https://test.example.com' }
+    let(:role_name) { 'test-role' }
+
+    after do
+      client.unassign_role(role_name: role_name, actor_id: actor, issuer: issuer)
+      client.delete_role(role_name)
+    end
+
+    it 'checks for any role assignments for roles with permissions that match the given permission and resource identifier' do
+      permission1 = CloudFoundry::Perm::V1::Models::Permission.new(
+        name: 'permission-1',
+        resource_pattern: 'resource-pattern-1'
+      )
+      permission2 = CloudFoundry::Perm::V1::Models::Permission.new(
+        name: 'permission-2',
+        resource_pattern: 'resource-pattern-2'
+      )
+
+      client.create_role(name: role_name, permissions: [permission1, permission2])
+
+      client.assign_role(role_name: role_name, actor_id: actor, issuer: issuer)
+
+      expect(client.has_permission?(actor_id: actor, issuer: issuer, permission_name: 'permission-1', resource_id: 'resource-pattern-1')).to be true
+      expect(client.has_permission?(actor_id: actor, issuer: issuer, permission_name: 'permission-2', resource_id: 'resource-pattern-2')).to be true
+
+      expect(client.has_permission?(actor_id: actor, issuer: issuer, permission_name: 'permission-1', resource_id: 'resource-pattern-2')).to be false
+      expect(client.has_permission?(actor_id: actor, issuer: issuer, permission_name: 'permission-2', resource_id: 'resource-pattern-1')).to be false
+
+      expect(client.has_permission?(actor_id: actor2, issuer: issuer, permission_name: 'permission-2', resource_id: 'resource-pattern-1')).to be false
+    end
+  end
 end
