@@ -18,11 +18,11 @@ module CloudFoundry
           @timeout = timeout
         end
 
-        def create_role(name:, permissions: [])
+        def create_role(role_name:, permissions: [])
           permission_protos = permissions.map do |p|
             Protos::Permission.new(name: p.name, resource_pattern: p.resource_pattern)
           end
-          request = Protos::CreateRoleRequest.new(name: name, permissions: permission_protos)
+          request = Protos::CreateRoleRequest.new(name: role_name, permissions: permission_protos)
 
           response = grpc_role_service.create_role(request)
           role = response.role

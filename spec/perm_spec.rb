@@ -29,9 +29,9 @@ describe 'Perm' do
   attr_reader :role1, :role2
 
   before do
-    @role1 = client.create_role(name: role1_name)
-    @role2 = client.create_role(name: role2_name)
-    client.create_role(name: role3_name)
+    @role1 = client.create_role(role_name: role1_name)
+    @role2 = client.create_role(role_name: role2_name)
+    client.create_role(role_name: role3_name)
   end
 
   after do
@@ -79,7 +79,7 @@ describe 'Perm' do
   describe 'creating a role' do
     it 'saves the role' do
       role_name = 'test-role'
-      role = client.create_role(name: role_name)
+      role = client.create_role(role_name: role_name)
 
       expect(role.name).to eq(role_name)
       expect(role.name).to be_a(String)
@@ -101,7 +101,7 @@ describe 'Perm' do
         resource_pattern: 'resource-pattern-2'
       )
 
-      client.create_role(name: role_name, permissions: [permission1, permission2])
+      client.create_role(role_name: role_name, permissions: [permission1, permission2])
 
       retrieved_permissions = client.list_role_permissions(role_name: role_name)
 
@@ -177,7 +177,7 @@ describe 'Perm' do
         resource_pattern: 'resource-pattern-2'
       )
 
-      client.create_role(name: role_name, permissions: [permission1, permission2])
+      client.create_role(role_name: role_name, permissions: [permission1, permission2])
 
       client.assign_role(role_name: role_name, actor_id: actor, issuer: issuer)
 
