@@ -21,7 +21,7 @@ module CloudFoundry
 
         class InvalidCertificateAuthorities < StandardError; end
 
-        class BadStatus < ::StandardError
+        class BadStatus < StandardError
           attr_reader :code, :details, :metadata
 
           def initialize(code, details = 'unknown cause', metadata = {})
