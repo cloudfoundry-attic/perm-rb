@@ -13,3 +13,7 @@ Metrics/LineLength:
 Metrics/BlockLength:
   Exclude:
   - spec/**/*.rb
+
+Metrics/ClassLength:
+  Exclude:
+  - lib/perm/v1/client.rb

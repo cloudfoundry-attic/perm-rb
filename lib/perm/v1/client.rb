@@ -28,6 +28,8 @@ module CloudFoundry
           role = response.role
 
           Models::Role.new(name: role.name)
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         def get_role(name)
@@ -37,6 +39,8 @@ module CloudFoundry
           role = response.role
 
           Models::Role.new(name: role.name)
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         def delete_role(name)
@@ -45,6 +49,8 @@ module CloudFoundry
           grpc_role_service.delete_role(request)
 
           nil
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         def assign_role(role_name:, actor_id:, issuer:)
@@ -54,6 +60,8 @@ module CloudFoundry
           grpc_role_service.assign_role(request)
 
           nil
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         def unassign_role(role_name:, actor_id:, issuer:)
@@ -63,6 +71,8 @@ module CloudFoundry
           grpc_role_service.unassign_role(request)
 
           nil
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         # rubocop:disable Naming/PredicateName
@@ -72,6 +82,8 @@ module CloudFoundry
 
           response = grpc_role_service.has_role(request)
           response.has_role
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         def list_actor_roles(actor_id:, issuer:)
@@ -84,6 +96,8 @@ module CloudFoundry
           roles.map do |role|
             Models::Role.new(name: role.name)
           end
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         def list_role_permissions(role_name:)
@@ -95,6 +109,8 @@ module CloudFoundry
           permissions.map do |permission|
             Models::Permission.new(name: permission.name, resource_pattern: permission.resource_pattern)
           end
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         def has_permission?(actor_id:, issuer:, permission_name:, resource_id:)
@@ -107,6 +123,8 @@ module CloudFoundry
 
           response = grpc_permission_service.has_permission(request)
           response.has_permission
+        rescue GRPC::BadStatus => e
+          raise Errors::TransportError.new(e.message, e)
         end
 
         private
