@@ -72,7 +72,7 @@ describe 'Perm' do
       trusted_cas = [extra_ca1, extra_ca2]
       client = CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: trusted_cas)
 
-      expect { client.get_role(role1.name) }.to raise_error GRPC::Unavailable
+      expect { client.get_role(role1.name) }.to raise_error CloudFoundry::Perm::V1::Errors::BadStatus
     end
   end
 

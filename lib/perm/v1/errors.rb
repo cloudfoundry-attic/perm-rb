@@ -4,36 +4,36 @@ module CloudFoundry
   module Perm
     module V1
       module Errors
-        class StandardError < ::StandardError
-        end
-
-        class InvalidCertificateAuthorities < StandardError
-        end
-
-        class TransportError < StandardError
-          def initialize(msg, original_error)
-            @original_error = original_error
-            super(msg)
-          end
-
-          attr_reader :original_error
-
-          def metadata
-            original_error.metadata
-          end
-
-          def code
-            original_error.code
-          end
-
-          def details
-            original_error.details
-          end
-
-          def to_status
-            original_error.to_status
+        def self.from_grpc_error(e)
+          case e
+          when GRPC::AlreadyExists
+            AlreadyExists.new(e.code, e.details, e.metadata)
+          when GRPC::NotFound
+            NotFound.new(e.code, e.details, e.metadata)
+          when GRPC::BadStatus
+            BadStatus.new(e.code, e.details, e.metadata)
+          else
+            e
           end
         end
+
+        class StandardError < ::StandardError; end
+
+        class InvalidCertificateAuthorities < StandardError; end
+
+        class BadStatus < ::StandardError
+          attr_reader :code, :details, :metadata
+
+          def initialize(code, details = 'unknown cause', metadata = {})
+            super("#{code}:#{details}")
+            @code = code
+            @details = details
+            @metadata = metadata
+          end
+        end
+
+        class AlreadyExists < BadStatus; end
+        class NotFound < BadStatus; end
       end
     end
   end

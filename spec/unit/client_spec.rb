@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-fdescribe 'CloudFoundry::Perm::V1::Client' do
+describe 'CloudFoundry::Perm::V1::Client' do
   let(:role_service_spy) { instance_double(CloudFoundry::Perm::Protos::RoleService::Stub) }
   let(:permission_service_spy) { instance_double(CloudFoundry::Perm::Protos::PermissionService::Stub) }
 
@@ -21,7 +21,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.create_role(role_name: 'some-role')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 
@@ -31,7 +31,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.get_role('some-role')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 
@@ -41,7 +41,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.delete_role('some-role')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 
@@ -51,7 +51,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.assign_role(role_name: 'some-role', actor_id: 'some-actor-id', issuer: 'some-issuer')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 
@@ -61,7 +61,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.unassign_role(role_name: 'some-role', actor_id: 'some-actor-id', issuer: 'some-issuer')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 
@@ -71,7 +71,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.has_role?(role_name: 'some-role', actor_id: 'some-actor-id', issuer: 'some-issuer')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 
@@ -81,7 +81,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.list_actor_roles(actor_id: 'some-actor-id', issuer: 'some-issuer')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 
@@ -91,7 +91,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.list_role_permissions(role_name: 'some-role')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 
@@ -101,7 +101,7 @@ fdescribe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.has_permission?(actor_id: 'some-actor-id', issuer: 'some-issuer', permission_name: 'some-permission-name', resource_id: 'some-resource-id')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::TransportError, grpc_error.message)
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
 end
