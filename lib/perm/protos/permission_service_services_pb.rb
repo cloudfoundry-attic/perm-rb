@@ -17,6 +17,7 @@ module CloudFoundry
           self.service_name = 'cloud_foundry.perm.protos.PermissionService'
 
           rpc :HasPermission, HasPermissionRequest, HasPermissionResponse
+          rpc :ListResourcePatterns, ListResourcePatternsRequest, ListResourcePatternsResponse
         end
 
         Stub = Service.rpc_stub_class
