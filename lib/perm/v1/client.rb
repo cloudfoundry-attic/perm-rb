@@ -128,6 +128,20 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
+        def list_resource_patterns(actor_id:, issuer:, permission_name:)
+          actor = Protos::Actor.new(id: actor_id, issuer: issuer)
+          request = Protos::ListResourcePatternsRequest.new(
+            actor: actor,
+            permission_name: permission_name
+          )
+
+          response = grpc_permission_service.list_resource_patterns(request)
+
+          response.resource_patterns
+        rescue GRPC::BadStatus => e
+          raise Errors.from_grpc_error(e)
+        end
+
         private
 
         attr_reader :url, :trusted_cas, :timeout
