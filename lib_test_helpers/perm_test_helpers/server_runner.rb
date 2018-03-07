@@ -23,6 +23,7 @@ module CloudFoundry
         @tls_cert = opts[:tls_cert_path] || ENV['PERM_TEST_TLS_CERT_PATH'] || File.join(cert_path, 'tls.crt')
         @tls_key = opts[:tls_key_path] || ENV['PERM_TEST_TLS_KEY_PATH'] || File.join(cert_path, 'tls.key')
         @tls_ca_path = opts[:tls_ca_path] || ENV['PERM_TEST_TLS_CA_PATH'] || File.join(cert_path, 'tls_ca.crt')
+        @audit_file_path = opts[:audit_file_path] || ENV['PERM_TEST_AUDIT_FILE_PATH'] || '/dev/null'
         @tls_ca = File.open(tls_ca_path).read
 
         opts[:db] ||= {}
@@ -54,7 +55,7 @@ module CloudFoundry
       private
 
       attr_writer :port
-      attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key
+      attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key, :audit_file_path
       attr_reader :db_connection, :db_driver, :db_schema, :db_host, :db_port, :db_socket, :db_username, :db_password
       attr_reader :stdout, :stderr
 
@@ -107,7 +108,8 @@ module CloudFoundry
             '--sql-db-host', db_host,
             '--sql-db-port', db_port,
             '--sql-db-username', db_username,
-            '--sql-db-password', db_password
+            '--sql-db-password', db_password,
+            '--audit-file-path', audit_file_path
           ]
 
           process = Subprocess.popen(cmd, stdout: stdout, stderr: stderr)
