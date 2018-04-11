@@ -116,41 +116,41 @@ describe 'Perm' do
   describe 'assigning a role' do
     let(:actor1) { 'test-actor1' }
     let(:actor2) { 'test-actor2' }
-    let(:issuer) { 'https://test.example.com' }
+    let(:namespace) { 'https://test.example.com' }
 
     after do
-      client.unassign_role(role_name: role1.name, actor_id: actor1, issuer: issuer)
+      client.unassign_role(role_name: role1.name, actor_id: actor1, namespace: namespace)
     end
 
     it 'calls to the external service, assigning the role' do
-      client.assign_role(role_name: role1.name, actor_id: actor1, issuer: issuer)
+      client.assign_role(role_name: role1.name, actor_id: actor1, namespace: namespace)
 
-      expect(client.has_role?(role_name: role1.name, actor_id: actor1, issuer: issuer)).to be true
+      expect(client.has_role?(role_name: role1.name, actor_id: actor1, namespace: namespace)).to be true
 
-      expect(client.has_role?(role_name: role1.name, actor_id: actor2, issuer: issuer)).to be false
-      expect(client.has_role?(role_name: role2.name, actor_id: actor1, issuer: issuer)).to be false
-      expect(client.has_role?(role_name: SecureRandom.uuid, actor_id: actor1, issuer: issuer)).to be false
+      expect(client.has_role?(role_name: role1.name, actor_id: actor2, namespace: namespace)).to be false
+      expect(client.has_role?(role_name: role2.name, actor_id: actor1, namespace: namespace)).to be false
+      expect(client.has_role?(role_name: SecureRandom.uuid, actor_id: actor1, namespace: namespace)).to be false
     end
   end
 
   describe 'listing roles for an actor' do
     let(:actor) { 'test-actor' }
-    let(:issuer) { 'https://test.example.com' }
+    let(:namespace) { 'https://test.example.com' }
 
     after do
-      client.unassign_role(role_name: role1.name, actor_id: actor, issuer: issuer)
-      client.unassign_role(role_name: role2.name, actor_id: actor, issuer: issuer)
+      client.unassign_role(role_name: role1.name, actor_id: actor, namespace: namespace)
+      client.unassign_role(role_name: role2.name, actor_id: actor, namespace: namespace)
     end
 
     it 'lists all roles assigned to the actor' do
-      roles = client.list_actor_roles(actor_id: actor, issuer: issuer)
+      roles = client.list_actor_roles(actor_id: actor, namespace: namespace)
 
       expect(roles).to be_empty
 
-      client.assign_role(role_name: role1.name, actor_id: actor, issuer: issuer)
-      client.assign_role(role_name: role2.name, actor_id: actor, issuer: issuer)
+      client.assign_role(role_name: role1.name, actor_id: actor, namespace: namespace)
+      client.assign_role(role_name: role2.name, actor_id: actor, namespace: namespace)
 
-      roles = client.list_actor_roles(actor_id: actor, issuer: issuer)
+      roles = client.list_actor_roles(actor_id: actor, namespace: namespace)
 
       expect(roles).to contain_exactly(role1, role2)
     end
@@ -159,7 +159,7 @@ describe 'Perm' do
   describe 'asking if someone has a permission' do
     let(:actor) { 'test-actor' }
     let(:actor2) { 'test-actor-2' }
-    let(:issuer) { 'https://test.example.com' }
+    let(:namespace) { 'https://test.example.com' }
     let(:role_name) { 'test-role' }
     let(:permission1) do
       CloudFoundry::Perm::V1::Models::Permission.new(
@@ -175,27 +175,27 @@ describe 'Perm' do
     end
 
     after do
-      client.unassign_role(role_name: role_name, actor_id: actor, issuer: issuer)
+      client.unassign_role(role_name: role_name, actor_id: actor, namespace: namespace)
       client.delete_role(role_name)
     end
 
     it 'checks for any role assignments for roles with permissions that match the given permission and resource identifier' do
       client.create_role(role_name: role_name, permissions: [permission1, permission2])
-      client.assign_role(role_name: role_name, actor_id: actor, issuer: issuer)
+      client.assign_role(role_name: role_name, actor_id: actor, namespace: namespace)
 
-      expect(client.has_permission?(actor_id: actor, issuer: issuer, permission_name: 'permission-1', resource_id: 'resource-pattern-1')).to be true
-      expect(client.has_permission?(actor_id: actor, issuer: issuer, permission_name: 'permission-2', resource_id: 'resource-pattern-2')).to be true
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, permission_name: 'permission-1', resource_id: 'resource-pattern-1')).to be true
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, permission_name: 'permission-2', resource_id: 'resource-pattern-2')).to be true
 
-      expect(client.has_permission?(actor_id: actor, issuer: issuer, permission_name: 'permission-1', resource_id: 'resource-pattern-2')).to be false
-      expect(client.has_permission?(actor_id: actor, issuer: issuer, permission_name: 'permission-2', resource_id: 'resource-pattern-1')).to be false
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, permission_name: 'permission-1', resource_id: 'resource-pattern-2')).to be false
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, permission_name: 'permission-2', resource_id: 'resource-pattern-1')).to be false
 
-      expect(client.has_permission?(actor_id: actor2, issuer: issuer, permission_name: 'permission-2', resource_id: 'resource-pattern-1')).to be false
+      expect(client.has_permission?(actor_id: actor2, namespace: namespace, permission_name: 'permission-2', resource_id: 'resource-pattern-1')).to be false
     end
   end
 
   describe 'listing the resource patterns an actor has a particular permission for' do
     let(:actor) { 'test-actor' }
-    let(:issuer) { 'https://test.example.com' }
+    let(:namespace) { 'https://test.example.com' }
     let(:role_name) { 'test-role' }
     let(:permission_name) { 'permission-name' }
     let(:resource_pattern) { SecureRandom.uuid }
@@ -208,7 +208,7 @@ describe 'Perm' do
 
     before do
       client.create_role(role_name: role_name, permissions: [permission])
-      client.assign_role(role_name: role_name, actor_id: actor, issuer: issuer)
+      client.assign_role(role_name: role_name, actor_id: actor, namespace: namespace)
     end
 
     after do
@@ -218,7 +218,7 @@ describe 'Perm' do
     it 'returns the list of resource patterns' do
       returned_roles = client.list_resource_patterns(
         actor_id: actor,
-        issuer: issuer,
+        namespace: namespace,
         permission_name: permission_name
       )
 

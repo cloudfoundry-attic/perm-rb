@@ -6,7 +6,7 @@ require 'google/protobuf'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.Actor" do
     optional :id, :string, 2
-    optional :issuer, :string, 3
+    optional :namespace, :string, 3
   end
 end
 

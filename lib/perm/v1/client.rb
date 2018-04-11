@@ -54,8 +54,8 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def assign_role(role_name:, actor_id:, issuer:)
-          actor = Protos::Actor.new(id: actor_id, issuer: issuer)
+        def assign_role(role_name:, actor_id:, namespace:)
+          actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::AssignRoleRequest.new(actor: actor, role_name: role_name)
 
           grpc_role_service.assign_role(request)
@@ -65,8 +65,8 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def unassign_role(role_name:, actor_id:, issuer:)
-          actor = Protos::Actor.new(id: actor_id, issuer: issuer)
+        def unassign_role(role_name:, actor_id:, namespace:)
+          actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::UnassignRoleRequest.new(actor: actor, role_name: role_name)
 
           grpc_role_service.unassign_role(request)
@@ -77,8 +77,8 @@ module CloudFoundry
         end
 
         # rubocop:disable Naming/PredicateName
-        def has_role?(role_name:, actor_id:, issuer:)
-          actor = Protos::Actor.new(id: actor_id, issuer: issuer)
+        def has_role?(role_name:, actor_id:, namespace:)
+          actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::HasRoleRequest.new(actor: actor, role_name: role_name)
 
           response = grpc_role_service.has_role(request)
@@ -87,8 +87,8 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def list_actor_roles(actor_id:, issuer:)
-          actor = Protos::Actor.new(id: actor_id, issuer: issuer)
+        def list_actor_roles(actor_id:, namespace:)
+          actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::ListActorRolesRequest.new(actor: actor)
 
           response = grpc_role_service.list_actor_roles(request)
@@ -114,8 +114,8 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def has_permission?(actor_id:, issuer:, permission_name:, resource_id:)
-          actor = Protos::Actor.new(id: actor_id, issuer: issuer)
+        def has_permission?(actor_id:, namespace:, permission_name:, resource_id:)
+          actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::HasPermissionRequest.new(
             actor: actor,
             permission_name: permission_name,
@@ -128,8 +128,8 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def list_resource_patterns(actor_id:, issuer:, permission_name:)
-          actor = Protos::Actor.new(id: actor_id, issuer: issuer)
+        def list_resource_patterns(actor_id:, namespace:, permission_name:)
+          actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::ListResourcePatternsRequest.new(
             actor: actor,
             permission_name: permission_name

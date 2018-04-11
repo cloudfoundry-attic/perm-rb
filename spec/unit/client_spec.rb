@@ -50,7 +50,7 @@ describe 'CloudFoundry::Perm::V1::Client' do
       allow(role_service_spy).to receive(:assign_role).and_raise(grpc_error)
 
       expect do
-        client.assign_role(role_name: 'some-role', actor_id: 'some-actor-id', issuer: 'some-issuer')
+        client.assign_role(role_name: 'some-role', actor_id: 'some-actor-id', namespace: 'some-namespace')
       end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
@@ -60,7 +60,7 @@ describe 'CloudFoundry::Perm::V1::Client' do
       allow(role_service_spy).to receive(:unassign_role).and_raise(grpc_error)
 
       expect do
-        client.unassign_role(role_name: 'some-role', actor_id: 'some-actor-id', issuer: 'some-issuer')
+        client.unassign_role(role_name: 'some-role', actor_id: 'some-actor-id', namespace: 'some-namespace')
       end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
@@ -70,7 +70,7 @@ describe 'CloudFoundry::Perm::V1::Client' do
       allow(role_service_spy).to receive(:has_role).and_raise(grpc_error)
 
       expect do
-        client.has_role?(role_name: 'some-role', actor_id: 'some-actor-id', issuer: 'some-issuer')
+        client.has_role?(role_name: 'some-role', actor_id: 'some-actor-id', namespace: 'some-namespace')
       end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
@@ -80,7 +80,7 @@ describe 'CloudFoundry::Perm::V1::Client' do
       allow(role_service_spy).to receive(:list_actor_roles).and_raise(grpc_error)
 
       expect do
-        client.list_actor_roles(actor_id: 'some-actor-id', issuer: 'some-issuer')
+        client.list_actor_roles(actor_id: 'some-actor-id', namespace: 'some-namespace')
       end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
@@ -100,7 +100,7 @@ describe 'CloudFoundry::Perm::V1::Client' do
       allow(permission_service_spy).to receive(:has_permission).and_raise(grpc_error)
 
       expect do
-        client.has_permission?(actor_id: 'some-actor-id', issuer: 'some-issuer', permission_name: 'some-permission-name', resource_id: 'some-resource-id')
+        client.has_permission?(actor_id: 'some-actor-id', namespace: 'some-namespace', permission_name: 'some-permission-name', resource_id: 'some-resource-id')
       end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end
