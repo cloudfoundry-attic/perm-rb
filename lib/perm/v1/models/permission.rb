@@ -5,10 +5,10 @@ module CloudFoundry
     module V1
       module Models
         class Permission < BaseModel
-          attr_reader :name, :resource_pattern
+          attr_reader :action, :resource_pattern
 
-          def initialize(name:, resource_pattern:)
-            @name = name
+          def initialize(action:, resource_pattern:)
+            @action = action
             @resource_pattern = resource_pattern
           end
         end

@@ -5,7 +5,7 @@ require 'google/protobuf'
 
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.Permission" do
-    optional :name, :string, 1
+    optional :action, :string, 1
     optional :resource_pattern, :string, 2
   end
 end

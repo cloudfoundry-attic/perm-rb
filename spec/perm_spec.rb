@@ -97,11 +97,11 @@ describe 'Perm' do
       role_name = 'test-role'
 
       permission1 = CloudFoundry::Perm::V1::Models::Permission.new(
-        name: 'permission-1',
+        action: 'action-1',
         resource_pattern: 'resource-pattern-1'
       )
       permission2 = CloudFoundry::Perm::V1::Models::Permission.new(
-        name: 'permission-2',
+        action: 'action-2',
         resource_pattern: 'resource-pattern-2'
       )
 
@@ -163,13 +163,13 @@ describe 'Perm' do
     let(:role_name) { 'test-role' }
     let(:permission1) do
       CloudFoundry::Perm::V1::Models::Permission.new(
-        name: 'permission-1',
+        action: 'action-1',
         resource_pattern: 'resource-pattern-1'
       )
     end
     let(:permission2) do
       CloudFoundry::Perm::V1::Models::Permission.new(
-        name: 'permission-2',
+        action: 'action-2',
         resource_pattern: 'resource-pattern-2'
       )
     end
@@ -197,11 +197,11 @@ describe 'Perm' do
     let(:actor) { 'test-actor' }
     let(:namespace) { 'https://test.example.com' }
     let(:role_name) { 'test-role' }
-    let(:permission_name) { 'permission-name' }
+    let(:action) { 'action' }
     let(:resource_pattern) { SecureRandom.uuid }
     let(:permission) do
       CloudFoundry::Perm::V1::Models::Permission.new(
-        name: permission_name,
+        action: action,
         resource_pattern: resource_pattern
       )
     end

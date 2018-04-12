@@ -21,7 +21,7 @@ module CloudFoundry
 
         def create_role(role_name:, permissions: [])
           permission_protos = permissions.map do |p|
-            Protos::Permission.new(name: p.name, resource_pattern: p.resource_pattern)
+            Protos::Permission.new(action: p.action, resource_pattern: p.resource_pattern)
           end
           request = Protos::CreateRoleRequest.new(name: role_name, permissions: permission_protos)
 
@@ -108,7 +108,7 @@ module CloudFoundry
           permissions = response.permissions
 
           permissions.map do |permission|
-            Models::Permission.new(name: permission.name, resource_pattern: permission.resource_pattern)
+            Models::Permission.new(action: permission.action, resource_pattern: permission.resource_pattern)
           end
         rescue GRPC::BadStatus => e
           raise Errors.from_grpc_error(e)
