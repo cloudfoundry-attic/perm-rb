@@ -128,11 +128,11 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def list_resource_patterns(actor_id:, namespace:, permission_name:)
+        def list_resource_patterns(actor_id:, namespace:, action:)
           actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::ListResourcePatternsRequest.new(
             actor: actor,
-            permission_name: permission_name
+            action: action
           )
 
           response = grpc_permission_service.list_resource_patterns(request)

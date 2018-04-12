@@ -219,7 +219,7 @@ describe 'Perm' do
       returned_roles = client.list_resource_patterns(
         actor_id: actor,
         namespace: namespace,
-        permission_name: permission_name
+        action: action
       )
 
       expect(returned_roles).to eq([resource_pattern])
