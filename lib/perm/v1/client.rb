@@ -114,12 +114,12 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def has_permission?(actor_id:, namespace:, permission_name:, resource_id:)
+        def has_permission?(actor_id:, namespace:, action:, resource:)
           actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::HasPermissionRequest.new(
             actor: actor,
-            permission_name: permission_name,
-            resource_id: resource_id
+            action: action,
+            resource: resource
           )
 
           response = grpc_permission_service.has_permission(request)

@@ -183,13 +183,13 @@ describe 'Perm' do
       client.create_role(role_name: role_name, permissions: [permission1, permission2])
       client.assign_role(role_name: role_name, actor_id: actor, namespace: namespace)
 
-      expect(client.has_permission?(actor_id: actor, namespace: namespace, permission_name: 'permission-1', resource_id: 'resource-pattern-1')).to be true
-      expect(client.has_permission?(actor_id: actor, namespace: namespace, permission_name: 'permission-2', resource_id: 'resource-pattern-2')).to be true
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-1', resource: 'resource-pattern-1')).to be true
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-2', resource: 'resource-pattern-2')).to be true
 
-      expect(client.has_permission?(actor_id: actor, namespace: namespace, permission_name: 'permission-1', resource_id: 'resource-pattern-2')).to be false
-      expect(client.has_permission?(actor_id: actor, namespace: namespace, permission_name: 'permission-2', resource_id: 'resource-pattern-1')).to be false
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-1', resource: 'resource-pattern-2')).to be false
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-2', resource: 'resource-pattern-1')).to be false
 
-      expect(client.has_permission?(actor_id: actor2, namespace: namespace, permission_name: 'permission-2', resource_id: 'resource-pattern-1')).to be false
+      expect(client.has_permission?(actor_id: actor2, namespace: namespace, action: 'action-2', resource: 'resource-pattern-1')).to be false
     end
   end
 

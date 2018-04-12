@@ -7,15 +7,15 @@ require 'actor_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.HasPermissionRequest" do
     optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
-    optional :permission_name, :string, 2
-    optional :resource_id, :string, 3
+    optional :action, :string, 2
+    optional :resource, :string, 3
   end
   add_message "cloud_foundry.perm.protos.HasPermissionResponse" do
     optional :has_permission, :bool, 1
   end
   add_message "cloud_foundry.perm.protos.ListResourcePatternsRequest" do
     optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
-    optional :permission_name, :string, 2
+    optional :action, :string, 2
   end
   add_message "cloud_foundry.perm.protos.ListResourcePatternsResponse" do
     repeated :resource_patterns, :string, 1
