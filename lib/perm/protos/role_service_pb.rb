@@ -45,16 +45,16 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :has_role, :bool, 1
   end
   add_message "cloud_foundry.perm.protos.ListActorRolesRequest" do
-    optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
+    optional :actor, :message, 2, "cloud_foundry.perm.protos.Actor"
   end
   add_message "cloud_foundry.perm.protos.ListActorRolesResponse" do
-    repeated :roles, :message, 1, "cloud_foundry.perm.protos.Role"
+    repeated :roles, :message, 2, "cloud_foundry.perm.protos.Role"
   end
   add_message "cloud_foundry.perm.protos.ListRolePermissionsRequest" do
-    optional :role_name, :string, 1
+    optional :role_name, :string, 2
   end
   add_message "cloud_foundry.perm.protos.ListRolePermissionsResponse" do
-    repeated :permissions, :message, 1, "cloud_foundry.perm.protos.Permission"
+    repeated :permissions, :message, 2, "cloud_foundry.perm.protos.Permission"
   end
 end
 

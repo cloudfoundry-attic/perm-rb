@@ -14,11 +14,11 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :has_permission, :bool, 1
   end
   add_message "cloud_foundry.perm.protos.ListResourcePatternsRequest" do
-    optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
-    optional :action, :string, 2
+    optional :actor, :message, 2, "cloud_foundry.perm.protos.Actor"
+    optional :action, :string, 3
   end
   add_message "cloud_foundry.perm.protos.ListResourcePatternsResponse" do
-    repeated :resource_patterns, :string, 1
+    repeated :resource_patterns, :string, 2
   end
 end
 
