@@ -17,7 +17,6 @@ module CloudFoundry
           self.service_name = 'cloud_foundry.perm.protos.RoleService'
 
           rpc :CreateRole, CreateRoleRequest, CreateRoleResponse
-          rpc :GetRole, GetRoleRequest, GetRoleResponse
           rpc :DeleteRole, DeleteRoleRequest, DeleteRoleResponse
           rpc :AssignRole, AssignRoleRequest, AssignRoleResponse
           rpc :UnassignRole, UnassignRoleRequest, UnassignRoleResponse

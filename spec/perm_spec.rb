@@ -51,7 +51,7 @@ describe 'Perm' do
 
       client = CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: trusted_cas)
 
-      expect { client.get_role(role1.name) }.not_to raise_error
+      expect { client.list_role_permissions(role_name: role1.name) }.not_to raise_error
     end
 
     it 'accepts concatenated certs' do
@@ -59,7 +59,7 @@ describe 'Perm' do
 
       client = CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: [ca_string])
 
-      expect { client.get_role(role1.name) }.not_to raise_error
+      expect { client.list_role_permissions(role_name: role1.name) }.not_to raise_error
     end
 
     it 'errors if there are no CAs' do
@@ -72,25 +72,13 @@ describe 'Perm' do
       trusted_cas = [extra_ca1, extra_ca2]
       client = CloudFoundry::Perm::V1::Client.new(hostname: hostname, port: port, trusted_cas: trusted_cas)
 
-      expect { client.get_role(role1.name) }.to raise_error CloudFoundry::Perm::V1::Errors::BadStatus
+      expect { client.list_role_permissions(role_name: role1.name) }.to raise_error CloudFoundry::Perm::V1::Errors::BadStatus
     end
   end
 
   describe 'creating a role' do
     after do
       client.delete_role('test-role')
-    end
-
-    it 'saves the role' do
-      role_name = 'test-role'
-      role = client.create_role(role_name: role_name)
-
-      expect(role.name).to eq(role_name)
-      expect(role.name).to be_a(String)
-
-      retrieved_role = client.get_role(role_name)
-
-      expect(role).to eq(retrieved_role)
     end
 
     it 'saves the permissions associated with the role' do
@@ -105,7 +93,9 @@ describe 'Perm' do
         resource_pattern: 'resource-pattern-2'
       )
 
-      client.create_role(role_name: role_name, permissions: [permission1, permission2])
+      role = client.create_role(role_name: role_name, permissions: [permission1, permission2])
+      expect(role.name).to eq(role_name)
+      expect(role.name).to be_a(String)
 
       retrieved_permissions = client.list_role_permissions(role_name: role_name)
 

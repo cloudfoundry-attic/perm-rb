@@ -25,16 +25,6 @@ describe 'CloudFoundry::Perm::V1::Client' do
     end
   end
 
-  describe '#get_role' do
-    it 'returns a Transport error when given a GRPC::BadStatus' do
-      allow(role_service_spy).to receive(:get_role).and_raise(grpc_error)
-
-      expect do
-        client.get_role('some-role')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
-    end
-  end
-
   describe '#delete_role' do
     it 'returns a Transport error when given a GRPC::BadStatus' do
       allow(role_service_spy).to receive(:delete_role).and_raise(grpc_error)
