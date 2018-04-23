@@ -4,6 +4,7 @@
 require 'google/protobuf'
 
 require 'actor_pb'
+require 'group_pb'
 require 'permission_pb'
 require 'role_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
@@ -25,6 +26,12 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "cloud_foundry.perm.protos.AssignRoleResponse" do
   end
+  add_message "cloud_foundry.perm.protos.AssignRoleToGroupRequest" do
+    optional :group, :message, 1, "cloud_foundry.perm.protos.Group"
+    optional :role_name, :string, 2
+  end
+  add_message "cloud_foundry.perm.protos.AssignRoleToGroupResponse" do
+  end
   add_message "cloud_foundry.perm.protos.UnassignRoleRequest" do
     optional :actor, :message, 1, "cloud_foundry.perm.protos.Actor"
     optional :role_name, :string, 2
@@ -36,6 +43,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :role_name, :string, 2
   end
   add_message "cloud_foundry.perm.protos.HasRoleResponse" do
+    optional :has_role, :bool, 1
+  end
+  add_message "cloud_foundry.perm.protos.HasRoleForGroupRequest" do
+    optional :group, :message, 1, "cloud_foundry.perm.protos.Group"
+    optional :role_name, :string, 2
+  end
+  add_message "cloud_foundry.perm.protos.HasRoleForGroupResponse" do
     optional :has_role, :bool, 1
   end
   add_message "cloud_foundry.perm.protos.ListActorRolesRequest" do
@@ -61,10 +75,14 @@ module CloudFoundry
       DeleteRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.DeleteRoleResponse").msgclass
       AssignRoleRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.AssignRoleRequest").msgclass
       AssignRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.AssignRoleResponse").msgclass
+      AssignRoleToGroupRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.AssignRoleToGroupRequest").msgclass
+      AssignRoleToGroupResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.AssignRoleToGroupResponse").msgclass
       UnassignRoleRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.UnassignRoleRequest").msgclass
       UnassignRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.UnassignRoleResponse").msgclass
       HasRoleRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleRequest").msgclass
       HasRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleResponse").msgclass
+      HasRoleForGroupRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleForGroupRequest").msgclass
+      HasRoleForGroupResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleForGroupResponse").msgclass
       ListActorRolesRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListActorRolesRequest").msgclass
       ListActorRolesResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListActorRolesResponse").msgclass
       ListRolePermissionsRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListRolePermissionsRequest").msgclass

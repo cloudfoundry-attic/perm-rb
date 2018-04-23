@@ -19,8 +19,10 @@ module CloudFoundry
           rpc :CreateRole, CreateRoleRequest, CreateRoleResponse
           rpc :DeleteRole, DeleteRoleRequest, DeleteRoleResponse
           rpc :AssignRole, AssignRoleRequest, AssignRoleResponse
+          rpc :AssignRoleToGroup, AssignRoleToGroupRequest, AssignRoleToGroupResponse
           rpc :UnassignRole, UnassignRoleRequest, UnassignRoleResponse
           rpc :HasRole, HasRoleRequest, HasRoleResponse
+          rpc :HasRoleForGroup, HasRoleForGroupRequest, HasRoleForGroupResponse
           rpc :ListActorRoles, ListActorRolesRequest, ListActorRolesResponse
           rpc :ListRolePermissions, ListRolePermissionsRequest, ListRolePermissionsResponse
         end
