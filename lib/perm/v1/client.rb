@@ -33,17 +33,6 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def get_role(name)
-          request = Protos::GetRoleRequest.new(name: name)
-
-          response = grpc_role_service.get_role(request)
-          role = response.role
-
-          Models::Role.new(name: role.name)
-        rescue GRPC::BadStatus => e
-          raise Errors.from_grpc_error(e)
-        end
-
         def delete_role(name)
           request = Protos::DeleteRoleRequest.new(name: name)
 
