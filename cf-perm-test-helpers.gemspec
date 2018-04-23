@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.author = 'CloudFoundry Permissions Team'
   s.summary = 'Test helpers for CloudFoundry Permissions'
 
-  s.files = Dir.glob('{bin,lib}/**/*')
+  s.files = Dir.glob('{bin,lib_test_helpers}/**/*')
   s.files += %w[LICENSE NOTICE README.md]
   s.license = 'Apache-2.0'
 
