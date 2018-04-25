@@ -45,6 +45,16 @@ describe 'CloudFoundry::Perm::V1::Client' do
     end
   end
 
+  describe '#assign_role_to_group' do
+    it 'returns a Transport error when given a GRPC::BadStatus' do
+      allow(role_service_spy).to receive(:assign_role_to_group).and_raise(grpc_error)
+
+      expect do
+        client.assign_role_to_group(role_name: 'some-role', group_id: 'some-group-id')
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
+    end
+  end
+
   describe '#unassign_role' do
     it 'returns a Transport error when given a GRPC::BadStatus' do
       allow(role_service_spy).to receive(:unassign_role).and_raise(grpc_error)
@@ -61,6 +71,16 @@ describe 'CloudFoundry::Perm::V1::Client' do
 
       expect do
         client.has_role?(role_name: 'some-role', actor_id: 'some-actor-id', namespace: 'some-namespace')
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
+    end
+  end
+
+  describe '#has_role_for_group?' do
+    it 'returns a Transport error when given a GRPC::BadStatus' do
+      allow(role_service_spy).to receive(:has_role_for_group).and_raise(grpc_error)
+
+      expect do
+        client.has_role_for_group?(role_name: 'some-role', group_id: 'some-group-id')
       end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
   end

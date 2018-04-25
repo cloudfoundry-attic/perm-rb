@@ -65,12 +65,34 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
+        def assign_role_to_group(role_name:, group_id:)
+          group = Protos::Group.new(id: group_id)
+          request = Protos::AssignRoleToGroupRequest.new(group: group, role_name: role_name)
+
+          grpc_role_service.assign_role_to_group(request)
+
+          nil
+        rescue GRPC::BadStatus => e
+          raise Errors.from_grpc_error(e)
+        end
+
         # rubocop:disable Naming/PredicateName
         def has_role?(role_name:, actor_id:, namespace:)
           actor = Protos::Actor.new(id: actor_id, namespace: namespace)
           request = Protos::HasRoleRequest.new(actor: actor, role_name: role_name)
 
           response = grpc_role_service.has_role(request)
+          response.has_role
+        rescue GRPC::BadStatus => e
+          raise Errors.from_grpc_error(e)
+        end
+
+        # rubocop:disable Naming/PredicateName
+        def has_role_for_group?(role_name:, group_id:)
+          group = Protos::Group.new(id: group_id)
+          request = Protos::HasRoleForGroupRequest.new(group: group, role_name: role_name)
+
+          response = grpc_role_service.has_role_for_group(request)
           response.has_role
         rescue GRPC::BadStatus => e
           raise Errors.from_grpc_error(e)

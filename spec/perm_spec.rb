@@ -103,7 +103,7 @@ describe 'Perm' do
     end
   end
 
-  describe 'assigning a role' do
+  describe 'assigning a role to an actor' do
     let(:actor1) { 'test-actor1' }
     let(:actor2) { 'test-actor2' }
     let(:namespace) { 'https://test.example.com' }
@@ -120,6 +120,26 @@ describe 'Perm' do
       expect(client.has_role?(role_name: role1.name, actor_id: actor2, namespace: namespace)).to be false
       expect(client.has_role?(role_name: role2.name, actor_id: actor1, namespace: namespace)).to be false
       expect(client.has_role?(role_name: SecureRandom.uuid, actor_id: actor1, namespace: namespace)).to be false
+    end
+  end
+
+  describe 'assigning a role to a group' do
+    let(:group1) { 'test-group1' }
+    let(:group2) { 'test-group2' }
+
+    after do
+      # TODO: when unassign_role_from_group implemenetd
+      # client.unassign_role_from(role_name: role1.name, group_id: group1)
+    end
+
+    it 'calls to the external service, assigning the role' do
+      client.assign_role_to_group(role_name: role1.name, group_id: group1)
+
+      expect(client.has_role_for_group?(role_name: role1.name, group_id: group1)).to be true
+
+      expect(client.has_role_for_group?(role_name: role1.name, group_id: group2)).to be false
+      expect(client.has_role_for_group?(role_name: role2.name, group_id: group1)).to be false
+      expect(client.has_role_for_group?(role_name: SecureRandom.uuid, group_id: group1)).to be false
     end
   end
 
