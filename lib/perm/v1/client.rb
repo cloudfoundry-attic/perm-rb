@@ -87,7 +87,6 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        # rubocop:disable Naming/PredicateName
         def has_role_for_group?(role_name:, group_id:)
           group = Protos::Group.new(id: group_id)
           request = Protos::HasRoleForGroupRequest.new(group: group, role_name: role_name)
