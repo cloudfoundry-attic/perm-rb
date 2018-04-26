@@ -86,6 +86,7 @@ module CloudFoundry
         rescue GRPC::BadStatus => e
           raise Errors.from_grpc_error(e)
         end
+
         # rubocop:disable Naming/PredicateName
         def has_role?(role_name:, actor_id:, namespace:)
           actor = Protos::Actor.new(id: actor_id, namespace: namespace)
