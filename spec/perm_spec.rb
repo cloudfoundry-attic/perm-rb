@@ -128,8 +128,7 @@ describe 'Perm' do
     let(:group2) { 'test-group2' }
 
     after do
-      # TODO: when unassign_role_from_group implemenetd
-      # client.unassign_role_from(role_name: role1.name, group_id: group1)
+      client.unassign_role_from_group(role_name: role1.name, group_id: group1)
     end
 
     it 'calls to the external service, assigning the role' do

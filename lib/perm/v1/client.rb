@@ -76,6 +76,16 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
+        def unassign_role_from_group(role_name:, group_id:)
+          group = Protos::Group.new(id: group_id)
+          request = Protos::UnassignRoleFromGroupRequest.new(group: group, role_name: role_name)
+
+          grpc_role_service.unassign_role_from_group(request)
+
+          nil
+        rescue GRPC::BadStatus => e
+          raise Errors.from_grpc_error(e)
+        end
         # rubocop:disable Naming/PredicateName
         def has_role?(role_name:, actor_id:, namespace:)
           actor = Protos::Actor.new(id: actor_id, namespace: namespace)
