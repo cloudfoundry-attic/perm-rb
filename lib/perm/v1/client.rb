@@ -135,6 +135,7 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
+        # rubocop:disable Metrics/MethodLength
         def has_permission?(actor_id:, namespace:, action:, resource:, group_ids: [])
           actor = Protos::Actor.new(id: actor_id, namespace: namespace)
 
@@ -144,14 +145,10 @@ module CloudFoundry
           end
 
           request = Protos::HasPermissionRequest.new(
-            actor: actor,
-            action: action,
-            resource: resource,
-            groups: groups
+            actor: actor, action: action, resource: resource, groups: groups
           )
 
-          response = grpc_permission_service.has_permission(request)
-          response.has_permission
+          grpc_permission_service.has_permission(request).has_permission
         rescue GRPC::BadStatus => e
           raise Errors.from_grpc_error(e)
         end
