@@ -168,6 +168,7 @@ describe 'Perm' do
   describe 'asking if someone has a permission' do
     let(:actor) { 'test-actor' }
     let(:actor2) { 'test-actor-2' }
+    let(:group) { 'test-group' }
     let(:namespace) { 'https://test.example.com' }
     let(:role_name) { 'test-role' }
     let(:permission1) do
@@ -184,7 +185,6 @@ describe 'Perm' do
     end
 
     after do
-      client.unassign_role(role_name: role_name, actor_id: actor, namespace: namespace)
       client.delete_role(role_name)
     end
 
@@ -199,6 +199,21 @@ describe 'Perm' do
       expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-2', resource: 'resource-pattern-1')).to be false
 
       expect(client.has_permission?(actor_id: actor2, namespace: namespace, action: 'action-2', resource: 'resource-pattern-1')).to be false
+
+      client.unassign_role(role_name: role_name, actor_id: actor, namespace: namespace)
+    end
+
+    it 'checks if the groups are assigned to roles with or without permission' do
+      client.create_role(role_name: role_name, permissions: [permission1, permission2])
+      client.assign_role_to_group(role_name: role_name, group_id: group)
+
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-1', resource: 'resource-pattern-1', group_ids: [group])).to be true
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-2', resource: 'resource-pattern-2', group_ids: [group])).to be true
+
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-1', resource: 'resource-pattern-2', group_ids: [group])).to be false
+      expect(client.has_permission?(actor_id: actor, namespace: namespace, action: 'action-2', resource: 'resource-pattern-1', group_ids: [group])).to be false
+
+      client.unassign_role_from_group(role_name: role_name, group_id: group)
     end
   end
 

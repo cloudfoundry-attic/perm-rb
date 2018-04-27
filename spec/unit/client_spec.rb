@@ -123,5 +123,15 @@ describe 'CloudFoundry::Perm::V1::Client' do
         client.has_permission?(actor_id: 'some-actor-id', namespace: 'some-namespace', action: 'some-action', resource: 'some-resource')
       end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
     end
+
+    context 'when optional groups arg is not empty' do
+      it 'returns a Transport error when given a GRPC::BadStatus' do
+        allow(permission_service_spy).to receive(:has_permission).and_raise(grpc_error)
+
+        expect do
+          client.has_permission?(actor_id: 'some-actor-id', namespace: 'some-namespace', action: 'some-action', resource: 'some-resource', group_ids: ['some-group-id'])
+        end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
+      end
+    end
   end
 end

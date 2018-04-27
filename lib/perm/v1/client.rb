@@ -135,12 +135,19 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def has_permission?(actor_id:, namespace:, action:, resource:)
+        def has_permission?(actor_id:, namespace:, action:, resource:, group_ids: [])
           actor = Protos::Actor.new(id: actor_id, namespace: namespace)
+
+          groups = []
+          group_ids.each do |group_id|
+            groups.push(Protos::Group.new(id: group_id))
+          end
+
           request = Protos::HasPermissionRequest.new(
             actor: actor,
             action: action,
-            resource: resource
+            resource: resource,
+            groups: groups
           )
 
           response = grpc_permission_service.has_permission(request)
