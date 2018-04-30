@@ -76,9 +76,10 @@ module CloudFoundry
           '--db-schema', db_schema,
           '--db-host', db_host,
           '--db-port', db_port,
-          '--db-username', db_username,
-          '--db-password', db_password
+          '--db-username', db_username
         ]
+
+        cmd += ['--db-password', db_password] unless db_password.empty?
 
         Subprocess.check_call(cmd, stdout: stdout, stderr: stderr)
       end
@@ -108,9 +109,10 @@ module CloudFoundry
             '--db-host', db_host,
             '--db-port', db_port,
             '--db-username', db_username,
-            '--db-password', db_password,
             '--audit-file-path', audit_file_path
           ]
+
+          cmd += ['--db-password', db_password] unless db_password.empty?
 
           process = Subprocess.popen(cmd, stdout: stdout, stderr: stderr)
           wait_for_server(process.pid)
