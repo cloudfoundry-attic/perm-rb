@@ -95,16 +95,6 @@ describe 'CloudFoundry::Perm::V1::Client' do
     end
   end
 
-  describe '#list_actor_roles' do
-    it 'returns a Transport error when given a GRPC::BadStatus' do
-      allow(role_service_spy).to receive(:list_actor_roles).and_raise(grpc_error)
-
-      expect do
-        client.list_actor_roles(actor_id: 'some-actor-id', namespace: 'some-namespace')
-      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
-    end
-  end
-
   describe '#list_role_permissions' do
     it 'returns a Transport error when given a GRPC::BadStatus' do
       allow(role_service_spy).to receive(:list_role_permissions).and_raise(grpc_error)

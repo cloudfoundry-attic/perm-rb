@@ -108,20 +108,6 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def list_actor_roles(actor_id:, namespace:)
-          actor = Protos::Actor.new(id: actor_id, namespace: namespace)
-          request = Protos::ListActorRolesRequest.new(actor: actor)
-
-          response = grpc_role_service.list_actor_roles(request)
-          roles = response.roles
-
-          roles.map do |role|
-            Models::Role.new(name: role.name)
-          end
-        rescue GRPC::BadStatus => e
-          raise Errors.from_grpc_error(e)
-        end
-
         def list_role_permissions(role_name:)
           request = Protos::ListRolePermissionsRequest.new(role_name: role_name)
 

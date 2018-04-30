@@ -142,29 +142,6 @@ describe 'Perm' do
     end
   end
 
-  describe 'listing roles for an actor' do
-    let(:actor) { 'test-actor' }
-    let(:namespace) { 'https://test.example.com' }
-
-    after do
-      client.unassign_role(role_name: role1.name, actor_id: actor, namespace: namespace)
-      client.unassign_role(role_name: role2.name, actor_id: actor, namespace: namespace)
-    end
-
-    it 'lists all roles assigned to the actor' do
-      roles = client.list_actor_roles(actor_id: actor, namespace: namespace)
-
-      expect(roles).to be_empty
-
-      client.assign_role(role_name: role1.name, actor_id: actor, namespace: namespace)
-      client.assign_role(role_name: role2.name, actor_id: actor, namespace: namespace)
-
-      roles = client.list_actor_roles(actor_id: actor, namespace: namespace)
-
-      expect(roles).to contain_exactly(role1, role2)
-    end
-  end
-
   describe 'asking if someone has a permission' do
     let(:actor) { 'test-actor' }
     let(:actor2) { 'test-actor-2' }

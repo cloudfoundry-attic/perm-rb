@@ -24,7 +24,6 @@ module CloudFoundry
           rpc :UnassignRoleFromGroup, UnassignRoleFromGroupRequest, UnassignRoleFromGroupResponse
           rpc :HasRole, HasRoleRequest, HasRoleResponse
           rpc :HasRoleForGroup, HasRoleForGroupRequest, HasRoleForGroupResponse
-          rpc :ListActorRoles, ListActorRolesRequest, ListActorRolesResponse
           rpc :ListRolePermissions, ListRolePermissionsRequest, ListRolePermissionsResponse
         end
 

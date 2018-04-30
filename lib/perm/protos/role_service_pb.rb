@@ -58,12 +58,6 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.HasRoleForGroupResponse" do
     optional :has_role, :bool, 1
   end
-  add_message "cloud_foundry.perm.protos.ListActorRolesRequest" do
-    optional :actor, :message, 2, "cloud_foundry.perm.protos.Actor"
-  end
-  add_message "cloud_foundry.perm.protos.ListActorRolesResponse" do
-    repeated :roles, :message, 2, "cloud_foundry.perm.protos.Role"
-  end
   add_message "cloud_foundry.perm.protos.ListRolePermissionsRequest" do
     optional :role_name, :string, 2
   end
@@ -91,8 +85,6 @@ module CloudFoundry
       HasRoleResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleResponse").msgclass
       HasRoleForGroupRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleForGroupRequest").msgclass
       HasRoleForGroupResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.HasRoleForGroupResponse").msgclass
-      ListActorRolesRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListActorRolesRequest").msgclass
-      ListActorRolesResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListActorRolesResponse").msgclass
       ListRolePermissionsRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListRolePermissionsRequest").msgclass
       ListRolePermissionsResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("cloud_foundry.perm.protos.ListRolePermissionsResponse").msgclass
     end
