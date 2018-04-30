@@ -72,12 +72,12 @@ module CloudFoundry
           'migrate',
           'up',
           '--log-level', log_level,
-          '--sql-db-driver', db_driver,
-          '--sql-db-schema', db_schema,
-          '--sql-db-host', db_host,
-          '--sql-db-port', db_port,
-          '--sql-db-username', db_username,
-          '--sql-db-password', db_password
+          '--db-driver', db_driver,
+          '--db-schema', db_schema,
+          '--db-host', db_host,
+          '--db-port', db_port,
+          '--db-username', db_username,
+          '--db-password', db_password
         ]
 
         Subprocess.check_call(cmd, stdout: stdout, stderr: stderr)
@@ -103,12 +103,12 @@ module CloudFoundry
             '--log-level', log_level,
             '--tls-certificate', tls_cert,
             '--tls-key', tls_key,
-            '--sql-db-driver', db_driver,
-            '--sql-db-schema', db_schema,
-            '--sql-db-host', db_host,
-            '--sql-db-port', db_port,
-            '--sql-db-username', db_username,
-            '--sql-db-password', db_password,
+            '--db-driver', db_driver,
+            '--db-schema', db_schema,
+            '--db-host', db_host,
+            '--db-port', db_port,
+            '--db-username', db_username,
+            '--db-password', db_password,
             '--audit-file-path', audit_file_path
           ]
 
