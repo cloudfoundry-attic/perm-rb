@@ -72,12 +72,17 @@ module CloudFoundry
           'migrate',
           'up',
           '--log-level', log_level,
-          '--db-driver', db_driver,
-          '--db-schema', db_schema,
-          '--db-host', db_host,
-          '--db-port', db_port,
-          '--db-username', db_username
+          '--db-driver', db_driver
         ]
+
+        unless db_driver == "in-memory"
+          cmd += [
+            '--db-schema', db_schema,
+            '--db-host', db_host,
+            '--db-port', db_port,
+            '--db-username', db_username
+          ]
+        end
 
         cmd += ['--db-password', db_password] unless db_password.empty?
 
@@ -105,12 +110,17 @@ module CloudFoundry
             '--tls-certificate', tls_cert,
             '--tls-key', tls_key,
             '--db-driver', db_driver,
-            '--db-schema', db_schema,
-            '--db-host', db_host,
-            '--db-port', db_port,
-            '--db-username', db_username,
             '--audit-file-path', audit_file_path
           ]
+
+          unless db_driver == "in-memory"
+            cmd += [
+              '--db-schema', db_schema,
+              '--db-host', db_host,
+              '--db-port', db_port,
+              '--db-username', db_username
+            ]
+          end
 
           cmd += ['--db-password', db_password] unless db_password.empty?
 
