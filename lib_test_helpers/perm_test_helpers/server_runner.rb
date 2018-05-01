@@ -7,126 +7,76 @@ require 'subprocess'
 
 module CloudFoundry
   module PermTestHelpers
-    # rubocop:disable Metrics/ClassLength
     class ServerRunner
       attr_reader :hostname, :port, :tls_ca, :tls_ca_path
 
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def initialize(opts = {})
         cwd = File.dirname(__FILE__)
         cert_path = File.join(cwd, '..', 'fixtures', 'certs')
 
-        @hostname = opts[:hostname] || ENV['PERM_TEST_HOSTNAME'] || 'localhost'
-        @port = opts[:port] || ENV['PERM_TEST_PORT'] || random_port
-        @perm_path = opts[:perm_path] || ENV['PERM_TEST_PATH'] || 'perm'
-        @log_level = opts[:log_level] || ENV['PERM_TEST_LOG_LEVEL'] || 'fatal'
-        @tls_cert = opts[:tls_cert_path] || ENV['PERM_TEST_TLS_CERT_PATH'] || File.join(cert_path, 'tls.crt')
-        @tls_key = opts[:tls_key_path] || ENV['PERM_TEST_TLS_KEY_PATH'] || File.join(cert_path, 'tls.key')
-        @tls_ca_path = opts[:tls_ca_path] || ENV['PERM_TEST_TLS_CA_PATH'] || File.join(cert_path, 'tls_ca.crt')
-        @audit_file_path = opts[:audit_file_path] || ENV['PERM_TEST_AUDIT_FILE_PATH'] || '/dev/null'
+        options = Options.new(opts)
+
+        @hostname = options.attr(:hostname, 'PERM_TEST_HOSTNAME', 'localhost')
+        @port = options.attr(:port, 'PERM_TEST_PORT', random_port)
+        @perm_path = options.attr(:perm_path, 'PERM_TEST_PATH', 'perm')
+        @log_level = options.attr(:log_level, 'PERM_TEST_LOG_LEVEL', 'fatal')
+        @tls_cert = options.attr(:tls_cert_path, 'PERM_TEST_TLS_CERT_PATH', File.join(cert_path, 'tls.crt'))
+        @tls_key = options.attr(:tls_key_path, 'PERM_TEST_TLS_KEY_PATH', File.join(cert_path, 'tls.key'))
+        @tls_ca_path = options.attr(:tls_ca_path, 'PERM_TEST_TLS_CA_PATH', File.join(cert_path, 'tls_ca.crt'))
+        @audit_file_path = options.attr(:audit_file_path, 'PERM_TEST_AUDIT_FILE_PATH', '/dev/null')
         @tls_ca = File.open(tls_ca_path).read
 
-        opts[:db] ||= {}
-        @db_driver = opts[:db][:driver] || ENV['PERM_TEST_SQL_DB_DRIVER'] || 'mysql'
-        @db_schema = opts[:db][:schema] || ENV['PERM_TEST_SQL_DB_SCHEMA'] || random_schema
-        @db_host = opts[:db][:host] || ENV['PERM_TEST_SQL_DB_HOST'] || 'localhost'
-        @db_port = opts[:db][:port] || ENV['PERM_TEST_SQL_DB_PORT'] || '3306'
-        @db_socket = opts[:db][:socket] || ENV['PERM_TEST_SQL_DB_SOCKET'] || Mysql::MYSQL_UNIX_PORT
-        @db_username = opts[:db][:username] || ENV['PERM_TEST_SQL_DB_USERNAME'] || 'perm'
-        @db_password = opts[:db][:password] || ENV['PERM_TEST_SQL_DB_PASSWORD'] || ''
-
-        @stdout = opts[:stdout] || ENV['PERM_TEST_STDOUT_PATH'] || STDOUT
-        @stderr = opts[:stderr] || ENV['PERM_TEST_STDERR_PATH'] || STDERR
+        @stdout = options.attr(:stdout, 'PERM_TEST_STDOUT_PATH', STDOUT)
+        @stderr = options.attr(:stderr, 'PERM_TEST_STDERR_PATH', STDERR)
       end
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def start
-        create_db
-        migrate_db
         @process ||= start_perm
       end
 
       def stop
-        drop_db
         @process&.terminate
         @process = nil
       end
 
       private
 
-      attr_writer :port
-      attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key, :audit_file_path
-      attr_reader :db_connection, :db_driver, :db_schema, :db_host, :db_port, :db_socket, :db_username, :db_password
-      attr_reader :stdout, :stderr
-
-      def create_db
-        @db_connection = Mysql.connect(db_host, db_username, db_password, nil, db_port, db_socket)
-
-        stmt = @db_connection.prepare("create database #{db_schema}")
-        stmt.execute
-      end
-
-      def migrate_db
-        cmd = [
-          perm_path,
-          'migrate',
-          'up',
-          '--log-level', log_level,
-          '--db-driver', db_driver
-        ]
-
-        unless db_driver == "in-memory"
-          cmd += [
-            '--db-schema', db_schema,
-            '--db-host', db_host,
-            '--db-port', db_port,
-            '--db-username', db_username
-          ]
+      class Options
+        def initialize(opts)
+          @opts = opts
         end
 
-        cmd += ['--db-password', db_password] unless db_password.empty?
-
-        Subprocess.check_call(cmd, stdout: stdout, stderr: stderr)
+        def attr(key, env, default)
+          @opts[key] || ENV[env] || default
+        end
       end
 
-      def drop_db
-        stmt = @db_connection.prepare("drop database #{db_schema}")
-        stmt.execute
-      end
+      attr_writer :port
+      attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key, :audit_file_path
+      attr_reader :stdout, :stderr
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def start_perm
         retries = 0
         process = nil
 
         begin
-          listen_port = port || random_port
           cmd = [
             perm_path,
             'serve',
             '--listen-hostname', hostname,
-            '--listen-port', listen_port.to_s,
+            '--listen-port', port.to_s,
             '--log-level', log_level,
             '--tls-certificate', tls_cert,
             '--tls-key', tls_key,
-            '--db-driver', db_driver,
+            '--db-driver', 'in-memory',
             '--audit-file-path', audit_file_path
           ]
 
-          unless db_driver == "in-memory"
-            cmd += [
-              '--db-schema', db_schema,
-              '--db-host', db_host,
-              '--db-port', db_port,
-              '--db-username', db_username
-            ]
-          end
-
-          cmd += ['--db-password', db_password] unless db_password.empty?
-
           process = Subprocess.popen(cmd, stdout: stdout, stderr: stderr)
           wait_for_server(process.pid)
-          @port = listen_port
 
           process
         rescue Errno::ESRCH => e
@@ -141,11 +91,6 @@ module CloudFoundry
         end
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
-
-      def random_schema
-        # Dashes are invalid in DB names
-        "perm-#{SecureRandom.uuid}".tr('-', '_')
-      end
 
       def random_port
         rand(65_000 - 1024) + 1024
