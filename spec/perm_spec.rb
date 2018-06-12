@@ -198,12 +198,21 @@ describe 'Perm' do
     let(:actor) { 'test-actor' }
     let(:namespace) { 'https://test.example.com' }
     let(:role_name) { 'test-role' }
+    let(:group_role_name) { 'group-role-name' }
     let(:action) { 'action' }
+    let(:groups) { ['group'] }
     let(:resource_pattern) { SecureRandom.uuid }
+    let(:group_resource_pattern) { SecureRandom.uuid }
     let(:permission) do
       CloudFoundry::Perm::V1::Models::Permission.new(
         action: action,
         resource_pattern: resource_pattern
+      )
+    end
+    let(:group_permission) do
+      CloudFoundry::Perm::V1::Models::Permission.new(
+        action: action,
+        resource_pattern: group_resource_pattern
       )
     end
 
@@ -217,13 +226,26 @@ describe 'Perm' do
     end
 
     it 'returns the list of resource patterns' do
-      returned_roles = client.list_resource_patterns(
+      returned_resources = client.list_resource_patterns(
         actor_id: actor,
         namespace: namespace,
         action: action
       )
 
-      expect(returned_roles).to eq([resource_pattern])
+      expect(returned_resources).to eq([resource_pattern])
+    end
+
+    it 'returns the list of resource patterns for groups if they are specified' do
+      client.create_role(role_name: group_role_name, permissions: [group_permission])
+      client.assign_role_to_group(role_name: group_role_name, group_id: 'group')
+
+      returned_roles = client.list_resource_patterns(
+        actor_id: actor,
+        namespace: namespace,
+        action: action,
+        group_ids: groups
+      )
+      expect(returned_roles).to eq([resource_pattern, group_resource_pattern])
     end
   end
 end

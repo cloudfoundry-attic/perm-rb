@@ -139,11 +139,18 @@ module CloudFoundry
           raise Errors.from_grpc_error(e)
         end
 
-        def list_resource_patterns(actor_id:, namespace:, action:)
+        def list_resource_patterns(actor_id:, namespace:, action:, group_ids: [])
           actor = Protos::Actor.new(id: actor_id, namespace: namespace)
+
+          groups = []
+          group_ids.each do |group_id|
+            groups.push(Protos::Group.new(id: group_id))
+          end
+
           request = Protos::ListResourcePatternsRequest.new(
             actor: actor,
-            action: action
+            action: action,
+            groups: groups
           )
 
           response = grpc_permission_service.list_resource_patterns(request)

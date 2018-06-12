@@ -18,6 +18,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "cloud_foundry.perm.protos.ListResourcePatternsRequest" do
     optional :actor, :message, 2, "cloud_foundry.perm.protos.Actor"
     optional :action, :string, 3
+    repeated :groups, :message, 4, "cloud_foundry.perm.protos.Group"
   end
   add_message "cloud_foundry.perm.protos.ListResourcePatternsResponse" do
     repeated :resource_patterns, :string, 2

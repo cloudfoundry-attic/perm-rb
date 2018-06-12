@@ -124,4 +124,24 @@ describe 'CloudFoundry::Perm::V1::Client' do
       end
     end
   end
+
+  describe '#list_resource_patterns' do
+    it 'returns a Transport error when given a GRPC::BadStatus' do
+      allow(permission_service_spy).to receive(:list_resource_patterns).and_raise(grpc_error)
+
+      expect do
+        client.list_resource_patterns(actor_id: 'some-actor-id', namespace: 'some-namespace', action: 'some-action')
+      end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
+    end
+
+    context 'when optional groups arg is not empty' do
+      it 'returns a Transport error when given a GRPC::BadStatus' do
+        allow(permission_service_spy).to receive(:list_resource_patterns).and_raise(grpc_error)
+
+        expect do
+          client.list_resource_patterns(actor_id: 'some-actor-id', namespace: 'some-namespace', action: 'some-action', group_ids: ['some-group-id'])
+        end.to raise_error(CloudFoundry::Perm::V1::Errors::BadStatus, grpc_error.message)
+      end
+    end
+  end
 end
