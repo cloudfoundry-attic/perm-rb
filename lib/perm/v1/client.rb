@@ -168,12 +168,30 @@ module CloudFoundry
           @tls_credentials ||= GRPC::Core::ChannelCredentials.new(trusted_cas.join("\n"))
         end
 
+        def shared_channel
+          @shared_channel ||= GRPC::Core::Channel.new(
+            url,
+            { 'grpc.primary_user_agent' => "grpc-ruby/#{GRPC::VERSION}" },
+            tls_credentials
+          )
+        end
+
         def grpc_role_service
-          @grpc_role_service ||= Protos::RoleService::Stub.new(url, tls_credentials, timeout: timeout)
+          @grpc_role_service ||= Protos::RoleService::Stub.new(
+            url,
+            tls_credentials,
+            timeout: timeout,
+            channel_override: shared_channel
+          )
         end
 
         def grpc_permission_service
-          @grpc_permission_service ||= Protos::PermissionService::Stub.new(url, tls_credentials, timeout: timeout)
+          @grpc_permission_service ||= Protos::PermissionService::Stub.new(
+            url,
+            tls_credentials,
+            timeout: timeout,
+            channel_override: shared_channel
+          )
         end
       end
     end

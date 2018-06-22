@@ -76,6 +76,35 @@ describe 'Perm' do
     end
   end
 
+  describe 'when the server has a keepalive that is less than the amount of time between requests to different services' do
+    server_with_short_keepalive = nil
+
+    before(:all) do
+      opts = { keepalive: '1ns' }
+      server_with_short_keepalive = CloudFoundry::PermTestHelpers::ServerRunner.new(opts)
+      server_with_short_keepalive.start
+    end
+
+    after(:all) do
+      server_with_short_keepalive.stop
+    end
+
+    it 'successfully handles GOAWAY messages' do
+      client = CloudFoundry::Perm::V1::Client.new(
+        hostname: server_with_short_keepalive.hostname,
+        port: server_with_short_keepalive.port,
+        trusted_cas: trusted_cas
+      )
+
+      expect do
+        client.has_permission?(actor_id: SecureRandom.uuid, namespace: SecureRandom.uuid, action: 'action-1', resource: 'resource-pattern-1')
+        sleep 0.1
+        client.create_role(role_name: SecureRandom.uuid, permissions: [])
+        client.has_permission?(actor_id: SecureRandom.uuid, namespace: SecureRandom.uuid, action: 'action-1', resource: 'resource-pattern-1')
+      end.not_to raise_error
+    end
+  end
+
   describe 'creating a role' do
     after do
       client.delete_role('test-role')

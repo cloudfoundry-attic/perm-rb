@@ -26,6 +26,7 @@ module CloudFoundry
         @tls_ca_path = options.attr(:tls_ca_path, 'PERM_TEST_TLS_CA_PATH', File.join(cert_path, 'tls_ca.crt'))
         @audit_file_path = options.attr(:audit_file_path, 'PERM_TEST_AUDIT_FILE_PATH', '/dev/null')
         @tls_ca = File.open(tls_ca_path).read
+        @keepalive = options.attr(:keepalive, 'PERM_TEST_KEEPALIVE', '10s')
 
         @stdout = options.attr(:stdout, 'PERM_TEST_STDOUT_PATH', STDOUT)
         @stderr = options.attr(:stderr, 'PERM_TEST_STDERR_PATH', STDERR)
@@ -54,7 +55,7 @@ module CloudFoundry
       end
 
       attr_writer :port
-      attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key, :audit_file_path
+      attr_reader :perm_path, :log_level, :process, :tls_cert, :tls_key, :audit_file_path, :keepalive
       attr_reader :stdout, :stderr
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
@@ -72,7 +73,8 @@ module CloudFoundry
             '--tls-certificate', tls_cert,
             '--tls-key', tls_key,
             '--db-driver', 'in-memory',
-            '--audit-file-path', audit_file_path
+            '--audit-file-path', audit_file_path,
+            '--max-connection-idle', @keepalive
           ]
 
           process = Subprocess.popen(cmd, stdout: stdout, stderr: stderr)
