@@ -274,7 +274,7 @@ describe 'Perm' do
         action: action,
         group_ids: groups
       )
-      expect(returned_roles).to eq([resource_pattern, group_resource_pattern])
+      expect(returned_roles).to match_array([resource_pattern, group_resource_pattern])
     end
   end
 end
