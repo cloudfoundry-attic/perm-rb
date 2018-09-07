@@ -67,10 +67,10 @@ module CloudFoundry
           cmd = [
             perm_path,
             'serve',
-            '--listen-hostname', hostname,
-            '--listen-port', port.to_s,
+            '--host', hostname,
+            '--port', port.to_s,
             '--log-level', log_level,
-            '--tls-certificate', tls_cert,
+            '--tls-cert', tls_cert,
             '--tls-key', tls_key,
             '--db-driver', 'in-memory',
             '--audit-file-path', audit_file_path,
